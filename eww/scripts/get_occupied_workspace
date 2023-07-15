@@ -1,0 +1,17 @@
+
+
+update_occupied() {
+    output=$(bspc query -D -d .occupied --names)
+    echo $output
+}
+
+
+update_occupied
+
+bspc subscribe desktop node_add | while read -r _ ; do
+    update_occupied
+done
+
+bspc subscribe desktop node_remove | while read -r _ ; do
+    update_occupied
+done

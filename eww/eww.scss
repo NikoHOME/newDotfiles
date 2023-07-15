@@ -1,0 +1,94 @@
+* {
+  all: unset; //Unsets everything so you can style everything from scratch
+}
+
+//Global Styles
+.bar {
+  background-color: #3a3a3a;
+  color: #b0b4bc;
+  border-radius: 16px;
+}
+
+.metric scale trough highlight {
+  all: unset;
+  background-color: #537ace;
+  color: #000000;
+  border-radius: 10px;
+}
+.metric scale trough {
+  all: unset;
+  background-color: #4e4e4e;
+  border-radius: 50px;
+  min-height: 5px;
+  min-width: 50px;
+  margin-left: 3px;
+  margin-right: 3px;
+}
+.metric scale trough highlight {
+  all: unset;
+  background-color: #537ace;
+  color: #000000;
+  border-radius: 10px;
+}
+
+.metric-v scale trough highlight {
+  all: unset;
+  color: #000000;
+  border-radius: 10px;
+}
+
+.metric-v scale trough {
+  all: unset;
+  background-color: #4e4e4e;
+  border-radius: 50px;
+  min-width: 5px;
+  margin-top: 3px;
+  margin-bottom: 3px;
+}
+
+.ram-module .metric-v scale trough highlight{
+  background-color: #1e9131;
+}
+
+.disk-module .metric-v scale trough highlight{
+  background-color: #7f0fda;
+}
+
+.module_essid {
+  color: #a1bdce;
+  margin-left: 5px;
+}
+
+.volume-module button {
+  margin-right: 5px;
+}
+
+.time-module box {
+  margin-right: 10px;
+}
+
+.workspaces button:hover {
+  color: #ffffff;
+}
+
+.workspaces {
+  padding-left: 10px;
+}
+
+
+
+/* Unoccupied */
+.workspace {
+  color: #3e424f;
+}
+  
+.workspace_occupied {
+  color: #bfc9db;
+}
+
+.workspace_focussed {
+  color: #a1bdce;
+}
+
+
+

@@ -1,0 +1,15 @@
+#!/bin/sh
+
+update_current() {
+
+    current_workspace=$(bspc query -D -d focused --names)
+    echo $current_workspace
+}
+
+
+update_current
+
+bspc subscribe desktop node_transfer | while read -r _ ; do
+    update_current
+done
+

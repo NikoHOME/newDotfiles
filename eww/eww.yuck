@@ -1,0 +1,276 @@
+
+(defwidget bar []
+  (box :orientation "h"
+    (workspaces)
+    (right)
+  )
+)
+    
+(defwidget seperator []
+
+  (label
+    :class "seperator"
+    :text ":"
+  )
+)
+
+
+(defwidget right []
+  (box 
+    :class "right"
+    :orientation "h"
+    :space-evenly false
+    :spacing 10
+    :halign "end"
+    
+    (volume_module)
+    (wifi_module)
+    (seperator)
+    (disk_module)
+    (ram_module)
+    (seperator)
+    (clock_module)
+  )
+)
+    
+
+
+
+
+(defwidget disk_module []
+  (box 
+    :class "disk-module" 
+    :vexpand "false" 
+    :hexpand "false"  
+    (button 
+        :limit-width 2
+        :tooltip "using ${round((1 - (EWW_DISK["/"].free / EWW_DISK["/"].total)) * 100, 0)}% disk space"
+        :onclick "$HOME/.config/eww/bar/scripts/pop system"
+        :show_truncated false
+        :wrap false
+        (metric-v 
+          :label "💾 "
+          :value {round((1 - (EWW_DISK["/"].free / EWW_DISK["/"].total)) * 100, 0)}
+          :onchange ""
+        )
+      )
+          
+  )
+)
+
+
+(defpoll memory :interval "5s" "scripts/memory")
+
+(defwidget ram_module []
+  (box 
+    :class "ram-module" 
+    :vexpand "false" 
+    :hexpand "false" 
+    (button 
+        :limit-width 2
+        :tooltip "using ${memory}% ram"
+        :onclick "$HOME/.config/eww/bar/scripts/pop system"
+        :show_truncated false
+        :wrap false
+        (metric-v 
+          :label " "
+          :value memory
+          :onchange ""
+        )
+    )
+  )
+)
+
+(defvar vol_reveal false)
+(defpoll volume :interval "1s" "scripts/getvol")
+
+(defwidget volume_module []
+  (eventbox 
+      :onhover "eww update vol_reveal=\"true\""
+			:onhoverlost "eww update vol_reveal=\"false\""
+      :tooltip "${volume}%"
+      :class "volume-module"
+
+    (box 
+      :space-evenly "false" 
+      :hexpand "false" 
+      :vexpand true
+      :orientation "h" 
+      :spacing "3" 
+      (button   
+        :onclick "scripts/pop audio"  
+        :wrap "false"  
+        ""
+      )
+      (revealer 
+          :transition "slideleft"
+          :reveal vol_reveal
+          :duration "350ms"
+        (metric
+          :class "volbar"
+          :value volume
+          :orientation "h"
+          
+          :label ""
+          :onchange "amixer -D pulse sset Master {}%"
+        )
+      )
+    )
+  )
+)
+
+(defvar wifi_reveal false)
+
+(defpoll COL_WLAN :interval "1m" "scripts/wifi --COL")
+(defpoll ESSID_WLAN :interval "1m" "scripts/wifi --ESSID")
+(defpoll WLAN_ICON :interval "1m" "scripts/wifi --ICON")
+
+(defwidget wifi_module [] 
+  (eventbox 
+    :onhover "eww update wifi_reveal=\"true\""
+		:onhoverlost "eww update wifi_reveal=\"false\""
+    :class "module-wifi" 
+		(box 
+      :vexpand "false" 
+      :hexpand "false" 
+      :space-evenly "false"
+			(button 
+        :onclick "networkmanager_dmenu" 
+        :wrap "false" 
+        :style "color: ${COL_WLAN};" 
+        WLAN_ICON
+      )
+      (revealer 
+        :transition "slideright"
+        :reveal wifi_reveal
+        :duration "350ms"
+        (label    
+          :class "module_essid"
+			    :text ESSID_WLAN
+			    :orientation "h"
+			  )
+        
+      )
+    )
+  )
+)
+
+
+
+
+(defvar time_reveal false)
+(defpoll clock_time :interval "5m" "date +\%H")
+(defpoll clock_minute :interval "5s" "date +\%M")
+(defpoll clock_date :interval "10h" "date '+%d/%m'")
+
+(defwidget clock_module []
+  (eventbox 
+    :onhover "eww update time_reveal=\"true\""
+    :onhoverlost "eww update time_reveal=\"false\""
+    :class "time-module"
+    (box 
+      :class "module" 
+      :space-evenly "false" 
+      :orientation "h" 
+      :spacing "3"
+      
+      (label :text clock_time :class "clock_time_class" )
+      (label :text ":" :class "clock_time_sep" )
+      (label :text clock_minute :class "clock_minute_class")
+      (revealer 
+        :transition "slideleft"
+        :reveal time_reveal
+        :duration "350ms"
+        (button 
+          :class "clock_date_class"
+          :onclick "$HOME/.config/eww/bar/scripts/pop calendar" 
+          clock_date 
+        )
+      )
+    )
+  )
+)
+
+(deflisten occupied_info "scripts/get_occupied_workspace")
+(deflisten current_info "scripts/get_current_workspace")
+
+(defwidget workspace_button [window_number]
+  (button 
+      :label {replace("number+", "number", window_number)}
+      :onclick {replace ("bspc desktop \"number\" -f", "number", window_number)}
+      :class 
+        {(
+          matches(
+            occupied_info, replace("number+", "number", window_number)
+          ) ? "workspace_occupied" : (current_info == window_number ? "workspace_current" : "workspace")
+        )}
+      {(matches(current_info, replace("number+", "number", window_number)) ? "" : "")}
+  )
+)
+
+
+(defwidget workspaces []
+  (box 
+    :class "workspaces"
+    :orientation "h"
+    :space-evenly true
+    :halign "start"
+    :spacing 10
+    (workspace_button :window_number "0")
+    (workspace_button :window_number "1")
+    (workspace_button :window_number "2")
+    (workspace_button :window_number "3")
+    (workspace_button :window_number "4")
+    (workspace_button :window_number "5")
+    (workspace_button :window_number "6")
+    (workspace_button :window_number "7")
+    (workspace_button :window_number "8")
+    (workspace_button :window_number "9")
+  )
+)
+
+
+
+(defwidget metric [label value onchange]
+  (box :orientation "h"
+      :class "metric"
+      :space-evenly false
+    (box :class "label" label)
+    (scale :min 0
+      :max 101
+      :active {onchange != ""}
+      :value value
+      :onchange onchange
+    )
+  )
+)
+
+(defwidget metric-v [label value onchange]
+  (box :orientation "h"
+    :class "metric-v"
+    :space-evenly false
+    (box :class "label" label)
+    (scale 
+      :min 0
+      :max 101
+      :active {onchange != ""}
+      :value value
+      :orientation "v"
+      :flipped true
+      :onchange onchange
+    )
+  )
+)
+
+
+(defwindow bar
+  :monitor 0
+  :windowtype "dock"
+  :geometry (geometry :x "0%"
+                      :y "1%"
+                      :width "95%"
+                      :height "30px"
+                      :anchor "top center")
+  :reserve (struts :side "top" :distance "4%")
+  (bar)
+)

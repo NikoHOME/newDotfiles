@@ -1,0 +1,30 @@
+#!/bin/bash
+
+status=$(nmcli g | grep -oE "connected")
+essid=$(nmcli c | grep wlp2s0 | awk '{print ($1)}')
+
+if [ -z $status ] ; then
+    icon=""
+    text=""
+    col="#575268"
+
+elif [ $essid ] ; then
+    icon=""
+    text="${essid}"
+    col="#a1bdce"
+else
+    icon=""
+    text="LAN"
+    col="#a1bdce"
+fi
+
+
+
+if [[ "$1" == "--COL" ]]; then
+    echo $col	
+elif [[ "$1" == "--ESSID" ]]; then
+	echo $text
+elif [[ "$1" == "--ICON" ]]; then
+	echo $icon
+fi
+
