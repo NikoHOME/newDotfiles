@@ -7,6 +7,7 @@
   background-color: #3a3a3a;
   color: #b0b4bc;
   border-radius: 16px;
+  font-size: larger;
 }
 
 .metric scale trough highlight {
@@ -54,9 +55,16 @@
   background-color: #7f0fda;
 }
 
+.bat-module .metric-v scale trough highlight{
+  background-color: #afbea2;
+}
+
 .module_essid {
   color: #a1bdce;
-  margin-left: 5px;
+}
+
+.module-wifi button {
+  margin-right: 5px;
 }
 
 .volume-module button {
@@ -92,3 +100,93 @@
 
 
 
+// Calendar
+.cal {
+  background-color: #0f0f17;
+  font-family: JetBrainsMono Nerd Font;
+  font-size: 18px;
+  font-weight: normal;
+
+.cal-in {
+    padding: 0px 10px 0px 10px;
+    color: #bfc9db;
+
+.cal {
+     &.highlight {
+          padding: 20px;
+      }
+
+      padding: 5px 5px 5px 5px;
+      margin-left: 10px;
+    }
+  }
+}
+
+calender {
+    color: #bfc9db;
+}
+calendar:selected {
+  color: #a1bdce;
+}
+
+calendar.header {
+color: #a1bdce;
+font-weight: bold;
+}
+
+calendar.button {
+color: #afbea2;
+}
+
+calendar.highlight {
+color: #a1bdce;
+font-weight: bold;
+}
+
+calendar:indeterminate {
+color: #bfc9db;
+}
+
+//System
+
+
+.sys_sep {
+  color: #38384d;
+  font-size: 18;
+  margin: 0px 10px 0px 10px;
+}
+.sys_text_bat_sub, .sys_text_mem_sub {
+  font-size: 16;
+  color: #bbc5d7;
+  margin: 5px 0px 0px 25px;
+}
+.sys_text_bat, .sys_text_mem, .sys_text_disk{
+  font-size: 21;
+  font-weight: bold;
+  margin: 14px 0px 0px 25px;
+}
+.sys_icon_bat, .sys_icon_mem, .sys_icon_disk {
+  font-size: 30;
+  margin: 30px;
+}
+.sys_win {
+  background-color: #0f0f17;
+}
+.sys_bat, .sys_mem, .sys_disk {
+  background-color: #38384d;
+  border-radius: 10px;
+}
+
+.sys_icon_bat, .sys_text_bat, .sys_bat {
+  color: #afbea2;
+}
+.sys_icon_mem, .sys_text_mem, .sys_mem {
+  color: #77e06d;
+}
+.sys_icon_disk, .sys_text_disk, .sys_disk {
+  color: #b76cda;
+}
+.sys_bat_box, .sys_mem_box, .sys_disk_box {
+  border-radius: 16px;
+  margin: 15px 15px 15px 20px;
+}

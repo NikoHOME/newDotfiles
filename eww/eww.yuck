@@ -24,8 +24,10 @@
     :halign "end"
     
     (volume_module)
+    (seperator)
     (wifi_module)
     (seperator)
+    (battery_module)
     (disk_module)
     (ram_module)
     (seperator)
@@ -35,6 +37,26 @@
     
 
 
+(defwidget battery_module []
+  (box 
+    :class "bat-module" 
+    :vexpand "false" 
+    :hexpand "false" 
+    (button 
+        :limit-width 2
+        :tooltip "battery on ${battery}%"
+        :onclick "eww open system"
+        :show_truncated false
+        :wrap false
+    
+      (metric-v 
+        :label "󰂄 " ; 
+        :value battery
+        :onchange ""
+      )
+    )
+  )
+)
 
 
 (defwidget disk_module []
@@ -43,18 +65,17 @@
     :vexpand "false" 
     :hexpand "false"  
     (button 
-        :limit-width 2
-        :tooltip "using ${round((1 - (EWW_DISK["/"].free / EWW_DISK["/"].total)) * 100, 0)}% disk space"
-        :onclick "$HOME/.config/eww/bar/scripts/pop system"
-        :show_truncated false
-        :wrap false
-        (metric-v 
-          :label "💾 "
-          :value {round((1 - (EWW_DISK["/"].free / EWW_DISK["/"].total)) * 100, 0)}
-          :onchange ""
-        )
+      :limit-width 2
+      :tooltip "using ${round((1 - (EWW_DISK["/"].free / EWW_DISK["/"].total)) * 100, 0)}% disk space"
+      :onclick "eww open system"
+      :show_truncated false
+      :wrap false
+      (metric-v 
+        :label "󰆼 " ; 
+        :value {round((1 - (EWW_DISK["/"].free / EWW_DISK["/"].total)) * 100, 0)}
+        :onchange ""
       )
-          
+    )
   )
 )
 
@@ -67,16 +88,16 @@
     :vexpand "false" 
     :hexpand "false" 
     (button 
-        :limit-width 2
-        :tooltip "using ${memory}% ram"
-        :onclick "$HOME/.config/eww/bar/scripts/pop system"
-        :show_truncated false
-        :wrap false
-        (metric-v 
-          :label " "
-          :value memory
-          :onchange ""
-        )
+      :limit-width 2
+      :tooltip "using ${memory}% ram"
+      :onclick "eww open system"
+      :show_truncated false
+      :wrap false
+      (metric-v 
+        :label "󰍛 "
+        :value memory
+        :onchange ""
+      )
     )
   )
 )
@@ -98,21 +119,21 @@
       :orientation "h" 
       :spacing "3" 
       (button   
-        :onclick "scripts/pop audio"  
+        :onclick "pavucontrol &"
         :wrap "false"  
         ""
       )
       (revealer 
           :transition "slideleft"
           :reveal vol_reveal
-          :duration "350ms"
+          :duration "400ms"
         (metric
           :class "volbar"
           :value volume
           :orientation "h"
           
           :label ""
-          :onchange "amixer -D pulse sset Master {}%"
+          :onchange "amixer sset Master {}%"
         )
       )
     )
@@ -121,21 +142,22 @@
 
 (defvar wifi_reveal false)
 
-(defpoll COL_WLAN :interval "1m" "scripts/wifi --COL")
-(defpoll ESSID_WLAN :interval "1m" "scripts/wifi --ESSID")
-(defpoll WLAN_ICON :interval "1m" "scripts/wifi --ICON")
+(defpoll COL_WLAN :interval "2s" "scripts/wifi --COL")
+(defpoll ESSID_WLAN :interval "2s" "scripts/wifi --ESSID")
+(defpoll WLAN_ICON :interval "2s" "scripts/wifi --ICON")
 
 (defwidget wifi_module [] 
   (eventbox 
     :onhover "eww update wifi_reveal=\"true\""
 		:onhoverlost "eww update wifi_reveal=\"false\""
+    :onclick "scripts/network-dmenu"
     :class "module-wifi" 
 		(box 
       :vexpand "false" 
       :hexpand "false" 
       :space-evenly "false"
 			(button 
-        :onclick "networkmanager_dmenu" 
+        :onclick "eww update wifi_reveal=\"true\""
         :wrap "false" 
         :style "color: ${COL_WLAN};" 
         WLAN_ICON
@@ -143,16 +165,48 @@
       (revealer 
         :transition "slideright"
         :reveal wifi_reveal
-        :duration "350ms"
+        :duration "400ms"
         (label    
           :class "module_essid"
 			    :text ESSID_WLAN
 			    :orientation "h"
 			  )
-        
       )
     )
   )
+)
+
+(defvar calendar_reaveal true)
+(defpoll calendar_day :interval "20h" "date '+%d'")
+(defpoll calendar_year :interval "20h" "date '+%Y'")
+
+(defwidget calendar_module []
+  (eventbox 
+    :onhoverlost "eww close calendar"
+    (box 
+      :class "cal" 
+      :orientation "v"
+      (box 
+        :class "cal-in"
+        (calendar 
+          :class "cal" 
+          :day calendar_day 
+          :year calendar_year
+          :visible {calendar_reaveal}
+        )
+      )
+    )
+  )
+)
+
+(defwindow calendar
+	:geometry (
+      geometry :x "-20px" 
+      :y "7%" 
+      :anchor "top right"
+      :width "270px" 
+      :height "60px")
+  (calendar_module)
 )
 
 
@@ -167,6 +221,7 @@
   (eventbox 
     :onhover "eww update time_reveal=\"true\""
     :onhoverlost "eww update time_reveal=\"false\""
+    :onclick "eww open calendar" 
     :class "time-module"
     (box 
       :class "module" 
@@ -183,7 +238,7 @@
         :duration "350ms"
         (button 
           :class "clock_date_class"
-          :onclick "$HOME/.config/eww/bar/scripts/pop calendar" 
+          :onclick "eww open calendar" 
           clock_date 
         )
       )
@@ -196,15 +251,15 @@
 
 (defwidget workspace_button [window_number]
   (button 
-      :label {replace("number+", "number", window_number)}
-      :onclick {replace ("bspc desktop \"number\" -f", "number", window_number)}
-      :class 
-        {(
-          matches(
-            occupied_info, replace("number+", "number", window_number)
-          ) ? "workspace_occupied" : (current_info == window_number ? "workspace_current" : "workspace")
-        )}
-      {(matches(current_info, replace("number+", "number", window_number)) ? "" : "")}
+    :label {replace("number+", "number", window_number)}
+    :onclick {replace ("bspc desktop \"number\" -f", "number", window_number)}
+    :class 
+      {(
+        matches(
+          occupied_info, replace("number+", "number", window_number)
+        ) ? "workspace_occupied" : (current_info == window_number ? "workspace_current" : "workspace")
+      )}
+    {(matches(current_info, replace("number+", "number", window_number)) ? "󰐾" : "󰐽")}
   )
 )
 
@@ -249,6 +304,8 @@
   (box :orientation "h"
     :class "metric-v"
     :space-evenly false
+    :vexpand false
+    :hexpand false
     (box :class "label" label)
     (scale 
       :min 0
@@ -258,6 +315,8 @@
       :orientation "v"
       :flipped true
       :onchange onchange
+      :vexpand false
+      :hexpand false
     )
   )
 )
@@ -266,11 +325,188 @@
 (defwindow bar
   :monitor 0
   :windowtype "dock"
-  :geometry (geometry :x "0%"
-                      :y "1%"
-                      :width "95%"
-                      :height "30px"
-                      :anchor "top center")
-  :reserve (struts :side "top" :distance "4%")
+  :geometry (geometry 
+    :x "0%"
+    :y "1%"
+    :width "95%"
+    :height "30px"
+    :anchor "top center"
+  )                    
+  :reserve (struts 
+    :side "top" 
+    :distance "6%"
+  )
   (bar)
+)
+
+
+(defwindow system
+	:geometry (geometry 
+    :x "-20px" 
+    :y "7%" 
+    :anchor "top right"
+    :width "290px" 
+    :height "200px"
+  )
+  (system)
+)
+
+(defpoll battery :interval "15s" "scripts/battery --bat")
+(defpoll battery_status :interval "1m" "scripts/battery --bat-st")
+
+
+(defpoll memory_used_mb :interval "10s" "scripts/mem-ad --used")
+(defpoll memory_total_mb :interval "10s" "scripts/mem-ad --total")
+(defpoll memory_free_mb :interval "10s" "scripts/mem-ad --free")
+
+(defwidget system []
+  (eventbox 
+    :onhoverlost "eww close system"
+    (box
+      :class "sys_win" 
+      :orientation "v" 
+      :space-evenly "false" 
+      :hexpand "false" 
+      :vexpand "false" 
+      :spacing 0
+      (box 
+        :class "sys_bat_box" 
+        :orientation "h" 
+        :space-evenly "false"
+        (circular-progress 
+          :value battery
+          :class "sys_bat"
+          :thickness 9
+          (label 
+            :text "󰂄"
+            :class "sys_icon_bat"
+            :limit-width 2
+            :show_truncated false
+            :wrap false)
+        )
+        (box 
+          :orientation "v" 
+          :space-evenly "false" 
+          :spacing 0 
+          :hexpand "false" 
+          :vexpand "false"
+          (label 
+            :text "battery"
+            :halign "start"
+            :class "sys_text_bat"
+            :limit-width 9
+            :show_truncated false
+            :wrap false
+          )
+          (label 
+            :text "${battery}%"
+            :halign "start"
+            :class "sys_text_bat_sub"
+            :limit-width 22
+            :show_truncated false
+            :wrap false
+          )
+          (label 
+            :text "${battery_status}"
+            :halign "start"
+            :class "sys_text_bat_sub"
+            :limit-width 22
+            :show_truncated false
+            :wrap false
+          )
+        )
+      )
+      (label :text "" :class "sys_sep" :halign "center")
+      (box 
+        :class "sys_bat_box" 
+        :orientation "h" 
+        :space-evenly "false"
+        (circular-progress 
+          :value {round((1 - (EWW_DISK["/"].free / EWW_DISK["/"].total)) * 100, 0)}
+          :class "sys_disk"
+          :thickness 9
+          (label 
+            :text ""
+            :class "sys_icon_disk"
+            :limit-width 2
+            :show_truncated false
+            :wrap false
+          )
+        )
+        (box 
+          :orientation "v" 
+          :space-evenly "false" 
+          :spacing 0 
+          :hexpand "false" 
+          :vexpand "false"
+          (label 
+            :text "disk usage"
+            :halign "start"
+            :class "sys_text_disk"
+            :limit-width 16
+            :show_truncated false
+            :wrap false
+          )
+          (label 
+            :text "${round((1 - (EWW_DISK["/"].free / EWW_DISK["/"].total)) * 100, 0)}%"
+            :halign "start"
+            :class "sys_text_bat_sub"
+            :limit-width 22
+            :show_truncated false
+            :wrap false
+          )
+        )
+      )
+      (label :text "" :class "sys_sep" :halign "center")
+      (box 
+        :class "sys_text_disk" 
+        :orientation "h" 
+        :space-evenly "false" 
+        :halign "start"
+        (circular-progress 
+          :value memory
+          :class "sys_mem"
+          :thickness 9
+          (label 
+            :text "󰍛"
+            :class "sys_icon_mem"
+            :limit-width 2
+            :show_truncated false
+            :wrap false
+            :angle 0.0
+          )
+        )
+        (box 
+          :orientation "v" 
+          :space-evenly "false" 
+          :spacing 0 
+          :hexpand "false" 
+          :vexpand "false"
+          (label 
+            :text "memory"
+            :halign "start"
+            :class "sys_text_mem"
+            :limit-width 9
+            :show_truncated false
+            :wrap false
+          )
+          (label 
+            :text "${memory_used_mb} | ${memory_total_mb}mb "
+            :halign "start"
+            :class "sys_text_mem_sub"
+            :limit-width 22
+            :show_truncated false
+            :wrap false)
+          (label :text "${memory_free_mb}mb free"
+              :halign "start"
+              :class "sys_text_mem_sub"
+              :limit-width 22
+              :show_truncated false
+              :wrap false
+          ) 
+        )
+      )
+      (label :text "" :class "sys_sep" :halign "center")
+    )
+  )
 )

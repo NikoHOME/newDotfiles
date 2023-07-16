@@ -1,7 +1,10 @@
 Essential:
     bspwm
-    fish
-    material-design
+    ttf-material-design-iconic-font
+    ner font symbols
+    cargo
+    xorg-xinit
+    rustup
 
 Additional:
     playerctl
@@ -11,8 +14,11 @@ Personal:
     alacritty
     pipewire
     networkmanager
+    pacseek
 
 Manual:
     eww
+    fish
+    yay
 
 
