@@ -1,0 +1,10 @@
+#!/bin/sh
+
+alacritty &
+
+if [[ "$1" == "--up" ]]; then
+    amixer  -M sset Master 5%+
+elif [[ "$1" == "--down" ]]; then
+	eval amixer  sset Master 5%-
+fi
+
