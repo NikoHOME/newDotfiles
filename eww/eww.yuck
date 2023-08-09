@@ -160,10 +160,8 @@
     
     (volume_module)
     (seperator)
-    (seperator)
     (wifi_module)
     (seperator)
-    (battery_module)
     (battery_module)
     (disk_module)
     (ram_module)
@@ -189,7 +187,7 @@
     
       (metric-v 
         :label "󰂄 " ; 
-        :value battery
+        :value {round(EWW_BATTERY.total_avg, 0)}
         :onchange ""
       )
     )
@@ -205,11 +203,11 @@
     (button 
         :limit-width 2
         :tooltip "using ${round((1 - (EWW_DISK["/"].free / EWW_DISK["/"].total)) * 100, 0)}% disk space"
-        :onclick "$HOME/.config/eww/bar/scripts/pop system"
+        :onclick "scripts/toggle_fade --system-on &"
         :show_truncated false
         :wrap false
         (metric-v 
-          :label "💾 "
+          :label "󰆼 "
           :value {round((1 - (EWW_DISK["/"].free / EWW_DISK["/"].total)) * 100, 0)}
           :onchange ""
         )
@@ -228,11 +226,11 @@
     (button 
         :limit-width 2
         :tooltip "using ${memory}% ram"
-        :onclick "$HOME/.config/eww/bar/scripts/pop system"
+        :onclick "scripts/toggle_fade --system-on &"
         :show_truncated false
         :wrap false
         (metric-v 
-          :label " "
+          :label "󰍛 "
           :value memory
           :onchange ""
         )
@@ -314,6 +312,11 @@
   )
 )
 
+(defvar calendar_reveal false)
+(defpoll calendar_day :interval "20h" "date '+%d'")
+(defpoll calendar_year :interval "20h" "date '+%Y'")
+
+
 (defwidget calendar_module []
   (eventbox 
     :onhoverlost "scripts/toggle_fade --calendar-off &"
@@ -376,7 +379,7 @@
         :duration "350ms"
         (button 
           :class "clock_date_class"
-          :onclick "$HOME/.config/eww/bar/scripts/pop calendar" 
+          :onclick "scripts/toggle_fade --calendar-on &" 
           clock_date 
         )
       )
@@ -427,7 +430,7 @@
             occupied_info, replace("number+", "number", window_number)
           ) ? "workspace_occupied" : (current_info == window_number ? "workspace_current" : "workspace")
         )}
-      {(matches(current_info, replace("number+", "number", window_number)) ? "" : "")}
+      {(matches(current_info, replace("number+", "number", window_number)) ? "" : "")}
   )
 
 )
@@ -558,7 +561,7 @@
             :orientation "h" 
             :space-evenly "false"
             (circular-progress 
-              :value battery
+              :value {round(EWW_BATTERY.total_avg, 0)}
               :class "sys_bat"
               :thickness 9
               (label 
@@ -583,7 +586,7 @@
                 :wrap false
               )
               (label 
-                :text "${battery}%"
+                :text "${round(EWW_BATTERY.total_avg, 0)}%"
                 :halign "start"
                 :class "sys_text_bat_sub"
                 :limit-width 22

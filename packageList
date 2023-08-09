@@ -5,6 +5,8 @@ Essential:
     cargo
     xorg-xinit
     rustup
+    trayer
+    feh
 
 Additional:
     playerctl
