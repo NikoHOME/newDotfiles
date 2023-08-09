@@ -567,7 +567,8 @@
               (label 
                 :text "󰂄"
                 :class "sys_icon_bat"
-                :limit-width 2
+                :xalign 0.5
+                :yalign 0.5
                 :show_truncated false
                 :wrap false)
             )
@@ -606,7 +607,7 @@
         )
         (label :text "" :class "sys_sep" :halign "center" )
         (box 
-          :class "sys_bat_box" 
+          :class "sys_disk_box" 
           :orientation "h" 
           :space-evenly "false"
           (circular-progress 
@@ -614,12 +615,13 @@
             :class "sys_disk"
             :haling "start"
             :thickness 9
-            (box 
+            (label 
               :class "sys_icon_disk"
-              :limit-width 2
               :show_truncated false
               :wrap false
-              ""
+              :xalign 0.5
+              :yalign 0.5
+              :text ""
             )
           )
           (box 
@@ -648,7 +650,7 @@
         )
         (label :text "" :class "sys_sep" :halign "center")
         (box 
-          :class "sys_text_disk" 
+          :class "sys_mem_box" 
           :orientation "h" 
           :space-evenly "false" 
           :halign "start"
@@ -657,12 +659,13 @@
             :class "sys_mem"
             :haling "start"
             :thickness 9
-            (box 
+            (label
               :class "sys_icon_mem"
-              :limit-width 2
               :show_truncated false
               :wrap false
-              "󰍛"
+              :xalign 0.5
+              :yalign 0.5
+              :text "󰍛"
             )
           )
           (box 
