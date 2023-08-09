@@ -2,12 +2,57 @@
   all: unset; //Unsets everything so you can style everything from scratch
 }
 
+
 //Global Styles
-.bar {
-  background-color: #3a3a3a;
+.main-bar-left {
+  //background-image: url("/home/linus/.config/qtile/img/background.jpg");
+  //background-color: transparent;
+  background-color: #0f0f17;
   color: #b0b4bc;
   border-radius: 16px;
+  font-size: large;
+  padding-right: 10px;
 }
+
+.main-bar-center {
+  //background-image: url("/home/linus/.config/qtile/img/background.jpg");
+  //background-color: transparent;
+  background-color: #0f0f17;
+  color: #b0b4bc;
+  border-radius: 16px;
+  font-size: large;
+  padding-left: 10px;
+  padding-right: 10px;
+}
+
+.main-bar-right {
+  //background-image: url("/home/linus/.config/qtile/img/background.jpg");
+  //background-color: transparent;
+  background-color: #0f0f17;
+  color: #b0b4bc;
+  border-radius: 16px;
+  font-size: large;
+  padding-left: 10px;
+}
+
+.main-bar-background {
+  //background-image: url("/home/linus/.config/qtile/img/background.jpg");
+  background-color: #0f0f17;
+  color: #b0b4bc;
+  border-radius: 16px;
+  font-size: large;
+}
+
+.transparent {
+  background-color: transparent;
+}
+
+.bar-eventbox {
+  opacity: 0;
+  //background-color: #537ace;
+}
+
+
 
 .metric scale trough highlight {
   all: unset;
@@ -54,9 +99,16 @@
   background-color: #7f0fda;
 }
 
+.bat-module .metric-v scale trough highlight{
+  background-color: #afbea2;
+}
+
 .module_essid {
   color: #a1bdce;
-  margin-left: 5px;
+}
+
+.module-wifi button {
+  margin-right: 5px;
 }
 
 .volume-module button {
@@ -69,26 +121,144 @@
 
 .workspaces button:hover {
   color: #ffffff;
+  
 }
 
 .workspaces {
   padding-left: 10px;
+  background-color: transparent;
 }
 
+.workspaces button {
+  background-color: transparent;
+}
 
 
 /* Unoccupied */
 .workspace {
   color: #3e424f;
+  background-color: transparent;
 }
   
 .workspace_occupied {
   color: #bfc9db;
+  background-color: transparent;
 }
 
 .workspace_focussed {
   color: #a1bdce;
+  background-color: transparent;
 }
 
 
 
+// Calendar
+.cal {
+  background-color: #0f0f17;
+  font-family: JetBrainsMono Nerd Font;
+  font-size: 18px;
+  font-weight: normal;
+
+.cal-in {
+    padding: 0px 10px 0px 10px;
+    color: #bfc9db;
+
+.cal {
+     &.highlight {
+          padding: 20px;
+      }
+
+      padding: 5px 5px 5px 5px;
+      margin-left: 10px;
+    }
+  }
+}
+
+calender {
+    color: #bfc9db;
+}
+calendar:selected {
+  color: #a1bdce;
+}
+
+calendar.header {
+color: #a1bdce;
+font-weight: bold;
+}
+
+calendar.button {
+color: #afbea2;
+}
+
+calendar.highlight {
+color: #a1bdce;
+font-weight: bold;
+}
+
+calendar:indeterminate {
+color: #bfc9db;
+}
+
+.clock_date_class {
+  font-family: monospace;
+  color: white;
+  padding-left: 5px;
+  padding-top: 1px;
+  font-size: large;
+}
+
+//System
+
+
+.sys_sep {
+  color: #38384d;
+  font-size: 18;
+  margin: 0px 10px 0px 10px;
+}
+.sys_text_bat_sub, .sys_text_mem_sub {
+  font-size: 16;
+  color: #bbc5d7;
+  margin: 5px 0px 0px 25px;
+}
+.sys_text_bat, .sys_text_mem, .sys_text_disk{
+  font-size: 21;
+  font-weight: bold;
+  margin: 14px 0px 0px 25px;
+}
+.sys_icon_bat, .sys_icon_mem, .sys_icon_disk {
+  font-size: 30;
+  margin: 30px;
+}
+.sys_win {
+  background-color: #0f0f17;
+}
+.sys_bat, .sys_mem, .sys_disk {
+  background-color: #38384d;
+  border-radius: 10px;
+}
+
+.sys_icon_bat, .sys_text_bat, .sys_bat {
+  color: #afbea2;
+}
+.sys_icon_mem, .sys_text_mem, .sys_mem {
+  color: #77e06d;
+}
+.sys_icon_disk, .sys_text_disk, .sys_disk {
+  color: #b76cda;
+}
+.sys_bat_box, .sys_mem_box, .sys_disk_box {
+  border-radius: 16px;
+  margin: 15px 15px 15px 20px;
+}
+
+.sys_icon_disk {
+  margin-left: 28px;
+  margin-right: 35px;
+}
+
+.sys_icon_mem {
+  padding-left: 1px;
+  padding-right: 1px;
+  margin-left: 28px;
+  margin-right: 31px;
+}

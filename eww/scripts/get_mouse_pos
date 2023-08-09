@@ -1,0 +1,3 @@
+#/bin/sh
+
+echo $(xdotool getmouselocation | sed -E "s/ screen:0 window:[^ ]*|x:|y://g" | cut -d " " -f 2)

@@ -1,21 +1,20 @@
 #!/bin/bash
 
 status=$(nmcli g | grep -oE "connected")
-essid=$(nmcli c | grep wlp2s0 | awk '{print ($1)}')
-
-if [ -z $status ] ; then
-    icon=""
-    text=""
-    col="#575268"
-
-elif [ $essid ] ; then
-    icon=""
+essid=$(nmcli c | head -n 2 | tail -n 1 | cut -d" " -f 1)
+type=$(nmcli c | head -n 2 | tail -n 1 | awk '{$1=$1;print}' | rev | cut -d" " -f 2 | rev)
+if [ $type = "ethernet" ] ; then
+    icon="󰖟"
+    text="LAN"
+    col="#a1bdce"
+elif [ $type = "wifi" ] ; then
+    icon=""
     text="${essid}"
     col="#a1bdce"
 else
-    icon=""
-    text="LAN"
-    col="#a1bdce"
+    icon="󰪎"
+    text=""
+    col="#575268"
 fi
 
 

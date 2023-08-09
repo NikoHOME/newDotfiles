@@ -1,0 +1,27 @@
+#!/bin/sh
+
+battery_check() {
+	if [ -z "$(ls -A /sys/class/power_supply)" ]; then
+		eww update "has_battery=false"
+	else
+		eww update "has_battery=true"
+	fi
+}
+
+battery() {
+	battery_check
+	BAT=`ls /sys/class/power_supply | grep BAT | head -n 1`
+	cat /sys/class/power_supply/${BAT}/capacity
+}
+battery_stat() {
+	battery_check
+	BAT=`ls /sys/class/power_supply | grep BAT | head -n 1`
+	cat /sys/class/power_supply/${BAT}/status
+	
+}
+
+if [[ "$1" == "--bat" ]]; then
+	battery
+elif [[ "$1" == "--bat-st" ]]; then
+	battery_stat
+fi

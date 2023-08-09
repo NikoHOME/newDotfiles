@@ -7,9 +7,11 @@ update_current() {
 }
 
 
-update_current
-
 bspc subscribe desktop node_transfer | while read -r _ ; do
     update_current
+    # ./scripts/delay_bar_open
+    # ./scripts/delay_bar_exit &
 done
+
+
 

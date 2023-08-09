@@ -1,19 +1,47 @@
 #! /bin/sh
 
+
+
+
 pgrep -x sxhkd > /dev/null || sxhkd &
 
 bspc monitor -d 0 1 2 3 4 5 6 7 8 9 
 
 bspc config border_width         2
-bspc config top_padding        	24
+bspc config top_padding        	40
+bspc config left_padding        4
+bspc config right_padding       4
 bspc config window_gap          6
 
 bspc config split_ratio          0.52
 bspc config borderless_monocle   true
 bspc config gapless_monocle      true
 
+bspc rule -a eww-bar layer=above state=floating urgent=on sticky=on
+bspc rule -a eww-bar-eventbox layer=above state=floating urgent=on sticky=on
 bspc rule -a Gimp desktop='^8' state=floating follow=on
-bspc rule -a Chromium desktop='^2'
+bspc rule -a firefox desktop='^2'
 bspc rule -a mplayer2 state=floating
 bspc rule -a Kupfer.py focus=on
 bspc rule -a Screenkey manage=off
+
+
+
+picom -b
+pkill eww
+
+eww d --debug &
+
+# eww open bar-eventbox 
+# eww open bar-background --debug
+eww open bar --debug
+eww open bar-hoverbox --debug
+
+feh --bg-scale ~/.config/eww/background.jpg
+trayer --edge top --align center --widthtype percent --width 10 --padding 5 --distance 11 --tint 000000 --alpha 21 --transparent true --iconspacing 2 &
+# sleep 0.5
+# eww reload &
+
+
+
+

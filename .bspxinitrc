@@ -50,6 +50,6 @@ fi
 
 xsetroot -cursor_name left_ptr
 
-eww d &
-eww open bar
+#eww d &
+#eww open bar
 bspwm
