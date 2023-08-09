@@ -6,6 +6,11 @@ update_current() {
     echo $current_workspace
 }
 
+<<<<<<< HEAD
+=======
+#Initial desktop 0
+echo 0
+>>>>>>> refs/remotes/origin/main
 
 bspc subscribe desktop node_transfer | while read -r _ ; do
     update_current

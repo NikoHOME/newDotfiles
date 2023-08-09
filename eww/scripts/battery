@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 #!/bin/sh
 
 battery_check() {
@@ -10,10 +11,18 @@ battery_check() {
 
 battery() {
 	battery_check
+=======
+#!/bin/bash
+
+
+
+battery() {
+>>>>>>> refs/remotes/origin/main
 	BAT=`ls /sys/class/power_supply | grep BAT | head -n 1`
 	cat /sys/class/power_supply/${BAT}/capacity
 }
 battery_stat() {
+<<<<<<< HEAD
 	battery_check
 	BAT=`ls /sys/class/power_supply | grep BAT | head -n 1`
 	cat /sys/class/power_supply/${BAT}/status
@@ -25,3 +34,16 @@ if [[ "$1" == "--bat" ]]; then
 elif [[ "$1" == "--bat-st" ]]; then
 	battery_stat
 fi
+=======
+	BAT=`ls /sys/class/power_supply | grep BAT | head -n 1`
+	cat /sys/class/power_supply/${BAT}/status
+}
+
+# if [[ "$1" == "--bat" ]]; then
+# 	battery
+# elif [[ "$1" == "--bat-st" ]]; then
+# 	battery_stat
+# fi
+
+echo "0"
+>>>>>>> refs/remotes/origin/main
