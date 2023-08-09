@@ -174,16 +174,11 @@
     
 (defvar has_battery true)
 
-<<<<<<< HEAD
-=======
-
->>>>>>> refs/remotes/origin/main
 (defwidget battery_module []
   (box 
     :class "bat-module" 
     :vexpand "false" 
     :hexpand "false" 
-<<<<<<< HEAD
     :visible {has_battery}
     (button 
         ; :limit-width 2
@@ -191,14 +186,6 @@
         :onclick "scripts/toggle_fade --system-on &"
         ; :show_truncated false
         ; :wrap false
-=======
-    (button 
-        :limit-width 2
-        :tooltip "battery on ${battery}%"
-        :onclick "eww open system"
-        :show_truncated false
-        :wrap false
->>>>>>> refs/remotes/origin/main
     
       (metric-v 
         :label "󰂄 " ; 
