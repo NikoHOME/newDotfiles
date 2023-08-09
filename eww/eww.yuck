@@ -314,6 +314,30 @@
   )
 )
 
+(defwidget calendar_module []
+  (eventbox 
+    :onhoverlost "scripts/toggle_fade --calendar-off &"
+    (revealer
+      :transition "crossfade"
+      :duration "400ms"
+      :reveal {calendar_reveal}
+      (box 
+        :class "cal" 
+        :orientation "v"
+        (box 
+          :class "cal-in"
+          (calendar 
+            :class "cal" 
+            :day calendar_day 
+            :year calendar_year
+          )
+        )
+      )
+    )
+  )
+)
+
+
 (defwindow calendar
 	:geometry (
       geometry :x "-20px" 
