@@ -259,7 +259,6 @@
       (button   
         :onclick "scripts/pop audio"  
         :wrap "false"  
->>>>>>> refs/remotes/origin/main
         ""
       )
       (revealer 
@@ -298,7 +297,6 @@
 			(button 
         :onclick "networkmanager_dmenu" 
         :wrap "false" 
->>>>>>> refs/remotes/origin/main
         :style "color: ${COL_WLAN};" 
         WLAN_ICON
       )
