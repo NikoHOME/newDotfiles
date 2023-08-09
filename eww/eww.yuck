@@ -499,3 +499,179 @@
   )
   (bar)
 )
+
+
+
+(defpoll memory_used_mb :interval "10s" "scripts/mem-ad --used")
+(defpoll memory_total_mb :interval "10s" "scripts/mem-ad --total")
+(defpoll memory_free_mb :interval "10s" "scripts/mem-ad --free")
+
+(defvar system_reveal "false")
+
+
+(defwidget system []
+  (eventbox 
+    :onhoverlost "scripts/toggle_fade --system-off &"
+    :height 10
+    (revealer
+      :transition "crossfade"
+      :duration "400ms"
+      :reveal {system_reveal}
+      
+      (box
+        :class "sys_win" 
+        :orientation "v" 
+        :space-evenly "false" 
+        :hexpand "false" 
+        :vexpand "false" 
+        :spacing 0
+        (revealer
+          :transition "none"
+          :duration "0ms"
+          :reveal {has_battery}
+          (box 
+            :class "sys_bat_box" 
+            :orientation "h" 
+            :space-evenly "false"
+            (circular-progress 
+              :value battery
+              :class "sys_bat"
+              :thickness 9
+              (label 
+                :text "󰂄"
+                :class "sys_icon_bat"
+                :limit-width 2
+                :show_truncated false
+                :wrap false)
+            )
+            (box 
+              :orientation "v" 
+              :space-evenly "false" 
+              :spacing 0 
+              :hexpand "false" 
+              :vexpand "false"
+              (label 
+                :text "battery"
+                :halign "start"
+                :class "sys_text_bat"
+                :limit-width 9
+                :show_truncated false
+                :wrap false
+              )
+              (label 
+                :text "${battery}%"
+                :halign "start"
+                :class "sys_text_bat_sub"
+                :limit-width 22
+                :show_truncated false
+                :wrap false
+              )
+              (label 
+                :text "${battery_status}"
+                :halign "start"
+                :class "sys_text_bat_sub"
+                :limit-width 22
+                :show_truncated false
+                :wrap false
+              )
+            )
+          )
+        )
+        (label :text "" :class "sys_sep" :halign "center" )
+        (box 
+          :class "sys_bat_box" 
+          :orientation "h" 
+          :space-evenly "false"
+          (circular-progress 
+            :value {round((1 - (EWW_DISK["/"].free / EWW_DISK["/"].total)) * 100, 0)}
+            :class "sys_disk"
+            :haling "start"
+            :thickness 9
+            (box 
+              :class "sys_icon_disk"
+              :limit-width 2
+              :show_truncated false
+              :wrap false
+              ""
+            )
+          )
+          (box 
+            :orientation "v" 
+            :space-evenly "false" 
+            :spacing 0 
+            :hexpand "false" 
+            :vexpand "false"
+            (label 
+              :text "disk usage"
+              :halign "start"
+              :class "sys_text_disk"
+              :limit-width 16
+              :show_truncated false
+              :wrap false
+            )
+            (label 
+              :text "${round((1 - (EWW_DISK["/"].free / EWW_DISK["/"].total)) * 100, 0)}%"
+              :halign "start"
+              :class "sys_text_bat_sub"
+              :limit-width 22
+              :show_truncated false
+              :wrap false
+            )
+          )
+        )
+        (label :text "" :class "sys_sep" :halign "center")
+        (box 
+          :class "sys_text_disk" 
+          :orientation "h" 
+          :space-evenly "false" 
+          :halign "start"
+          (circular-progress 
+            :value memory
+            :class "sys_mem"
+            :haling "start"
+            :thickness 9
+            (box 
+              :class "sys_icon_mem"
+              :limit-width 2
+              :show_truncated false
+              :wrap false
+              "󰍛"
+            )
+          )
+          (box 
+            :orientation "v" 
+            :space-evenly "false" 
+            :spacing 0 
+            :hexpand "false" 
+            :vexpand "false"
+            (label 
+              :text "memory"
+              :halign "start"
+              :class "sys_text_mem"
+              :limit-width 9
+              :show_truncated false
+              :wrap false
+            )
+            (label 
+              :text "${memory_used_mb} | ${memory_total_mb}mb "
+              :halign "start"
+              :class "sys_text_mem_sub"
+              :limit-width 22
+              :show_truncated false
+              :wrap false)
+            (label 
+              :text "${memory_free_mb}mb free"
+              :halign "start"
+              :class "sys_text_mem_sub"
+              :limit-width 22
+              :show_truncated false
+              :wrap false
+            ) 
+          )
+        )
+        (label :text "" :class "sys_sep" :halign "center")
+      )
+    )
+  )
+)
+
