@@ -469,8 +469,6 @@
 )
 
 
-<<<<<<< HEAD
-
 
 
 
@@ -487,7 +485,6 @@
 
 (defpoll battery :initial "0" :interval "15s" "scripts/battery --bat")
 (defpoll battery_status :initial "0" :interval "1m" "scripts/battery --bat-st")
-=======
 (defwindow bar
   :monitor 0
   :windowtype "dock"
