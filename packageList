@@ -7,6 +7,7 @@ Essential:
     rustup
     trayer
     feh
+    spectacle
 
 Additional:
     playerctl
@@ -17,10 +18,17 @@ Personal:
     pipewire
     networkmanager
     pacseek
+    font-manager
 
 Manual:
     eww
     fish
     yay
+
+TODO:
+    screenshot
+    window mode toggle 
+    window resize
+    
 
 

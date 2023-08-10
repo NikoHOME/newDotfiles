@@ -557,7 +557,7 @@
           :duration "0ms"
           :reveal {has_battery}
           (box 
-            :class "sys_bat_box" 
+            :class "system_popup_section_box system_popup_battery" 
             :orientation "h" 
             :space-evenly "false"
             (circular-progress 
@@ -566,7 +566,7 @@
               :thickness 9
               (label 
                 :text "󰂄"
-                :class "sys_icon_bat"
+                :class "system_popup_battery system_popup_icon"
                 :xalign 0.5
                 :yalign 0.5
                 :show_truncated false
@@ -581,7 +581,7 @@
               (label 
                 :text "battery"
                 :halign "start"
-                :class "sys_text_bat"
+                :class "system_popup_battery system_popup_top_text"
                 :limit-width 9
                 :show_truncated false
                 :wrap false
@@ -589,7 +589,7 @@
               (label 
                 :text "${round(EWW_BATTERY.total_avg, 0)}%"
                 :halign "start"
-                :class "sys_text_bat_sub"
+                :class "system_popup_bottom_text"
                 :limit-width 22
                 :show_truncated false
                 :wrap false
@@ -597,7 +597,7 @@
               (label 
                 :text "${battery_status}"
                 :halign "start"
-                :class "sys_text_bat_sub"
+                :class "system_popup_bottom_text"
                 :limit-width 22
                 :show_truncated false
                 :wrap false
@@ -607,7 +607,7 @@
         )
         (label :text "" :class "sys_sep" :halign "center" )
         (box 
-          :class "sys_disk_box" 
+          :class "system_popup_section_box system_popup_disk" 
           :orientation "h" 
           :space-evenly "false"
           (circular-progress 
@@ -616,11 +616,11 @@
             :haling "start"
             :thickness 9
             (label 
-              :class "sys_icon_disk"
+              :class "system_popup_icon"
               :show_truncated false
               :wrap false
-              :xalign 0.5
-              :yalign 0.5
+              :halign 0.5
+              :valign 0.5
               :text ""
             )
           )
@@ -633,7 +633,7 @@
             (label 
               :text "disk usage"
               :halign "start"
-              :class "sys_text_disk"
+              :class "system_popup_top_text"
               :limit-width 16
               :show_truncated false
               :wrap false
@@ -641,7 +641,7 @@
             (label 
               :text "${round((1 - (EWW_DISK["/"].free / EWW_DISK["/"].total)) * 100, 0)}%"
               :halign "start"
-              :class "sys_text_bat_sub"
+              :class "system_popup_bottom_text"
               :limit-width 22
               :show_truncated false
               :wrap false
@@ -650,7 +650,7 @@
         )
         (label :text "" :class "sys_sep" :halign "center")
         (box 
-          :class "sys_mem_box" 
+          :class "system_popup_section_box system_popup_memory" 
           :orientation "h" 
           :space-evenly "false" 
           :halign "start"
@@ -660,7 +660,7 @@
             :haling "start"
             :thickness 9
             (label
-              :class "sys_icon_mem"
+              :class "system_popup_icon"
               :show_truncated false
               :wrap false
               :xalign 0.5
@@ -677,7 +677,7 @@
             (label 
               :text "memory"
               :halign "start"
-              :class "sys_text_mem"
+              :class "system_popup_top_text"
               :limit-width 9
               :show_truncated false
               :wrap false
@@ -685,14 +685,14 @@
             (label 
               :text "${memory_used_mb} | ${memory_total_mb}mb "
               :halign "start"
-              :class "sys_text_mem_sub"
+              :class "system_popup_bottom_text"
               :limit-width 22
               :show_truncated false
               :wrap false)
             (label 
               :text "${memory_free_mb}mb free"
               :halign "start"
-              :class "sys_text_mem_sub"
+              :class "system_popup_bottom_text"
               :limit-width 22
               :show_truncated false
               :wrap false
