@@ -210,50 +210,50 @@ color: #bfc9db;
 //System
 
 
-.sys_sep {
+.css_system_seperator {
   color: #38384d;
   font-size: 18;
   margin: 0px 10px 0px 10px;
 }
 
-.system_popup_top_text {
+.css_system_popup_top_text {
   font-size: 21;
   font-weight: bold;
   margin: 14px 0px 0px 25px;
 }
 
-.system_popup_bottom_text {
+.css_system_popup_bottom_text {
   font-size: 16;
   color: #bbc5d7;
   margin: 5px 0px 0px 25px;
 }
 
 
-.system_popup_icon {
+.css_system_popup_icon {
   // font-size: 30;
   margin: 30px;
   font: 30px "Nerd Font Mono";
 }
 
 
-.sys_win {
+.css_system_popup_main {
   background-color: #0f0f17;
 }
-.sys_bat, .sys_mem, .sys_disk {
+.css_system_popup_circle {
   background-color: #38384d;
   border-radius: 10px;
 }
 
-.system_popup_battery {
+.css_system_popup_battery {
   color: #afbea2;
 }
-.system_popup_memory {
+.css_system_popup_memory {
   color: #77e06d;
 }
-.system_popup_disk {
+.css_system_popup_disk {
   color: #b76cda;
 }
-.system_popup_section_box {
+.css_system_popup_section_box {
   border-radius: 16px;
   margin: 15px 15px 15px 20px;
 }

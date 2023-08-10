@@ -35,6 +35,8 @@ eww d --debug &
 eww open bar --debug
 eww open bar-hoverbox --debug
 
+
+
 feh --bg-scale ~/.config/eww/background.jpg
 trayer --edge top --align center --widthtype percent --width 10 --padding 5 --distance 11 --tint 000000 --alpha 21 --transparent true --iconspacing 2 &
 # sleep 0.5

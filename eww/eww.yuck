@@ -1,37 +1,39 @@
 
 
-(defwidget bar-hoverbox []
-  (box
-    :class "bar-eventbox"
-    (eventbox
-      ; :onhover "scripts/delay_bar_open &" 
-    )
+; (defwidget bar-hoverbox []
+;   (box
+;     :class "bar-eventbox"
+;     (eventbox
+;       ; :onhover "scripts/delay_bar_open &" 
+;     )
     
-  )
-)
-
-
-(defwindow bar-hoverbox
-  :monitor 0
-  :windowtype "dock"
-  :stacking "fg"
-  :geometry (geometry 
-    :x "0%"
-    :y "0%"
-    :width "100%"
-    :height "1px"
-    :anchor "top center"
-  )                   
-  :reserve (struts 
-    :side "top" 
-    :distance "1px"
-  )
-  (bar-hoverbox)
-)
+;   )
+; )
 
 
 
-(defvar lastHoverID 0)
+
+; (defwindow bar-hoverbox
+;   :monitor 0
+;   :windowtype "dock"
+;   :stacking "fg"
+;   :geometry (geometry 
+;     :x "0%"
+;     :y "0%"
+;     :width "100%"
+;     :height "1px"
+;     :anchor "top center"
+;   )                   
+;   :reserve (struts 
+;     :side "top" 
+;     :distance "1px"
+;   )
+;   (bar-hoverbox)
+; )
+
+
+
+; (defvar lastHoverID 0)
 
 ; (defpoll mouse_position :interval "0.5s" "scripts/get_mouse_pos")
 ; (defpoll screen_height :interval "1m" "scripts/get_screen_height")
@@ -81,10 +83,20 @@
           :halign "end"
           :class "main-bar-right"
           (right)
+          (script_activator)
         )
       )
     )
   )
+)
+
+(deflisten on_start :initial "0" "scripts/on_start")
+
+(defwidget script_activator []
+ (box
+  :visible false
+  {on_start}  
+ )
 )
 
 (defwindow bar
@@ -103,6 +115,7 @@
   ;   :distance "6%"
   ; )
   (bar)
+  
 )
 
 ; (defwindow bar-background
@@ -170,7 +183,7 @@
   )
 )
     
-(defvar has_battery true)
+
 
 (defwidget battery_module []
   (box 
@@ -390,35 +403,6 @@
 (deflisten occupied_info :initial "0 1 2 3 4 5 6 7 8 9" "scripts/get_occupied_workspace" )
 (deflisten current_info :initial "0" "scripts/get_current_workspace")
 
-; (defvar workspace_color_0 "workspace_focussed")
-; (defvar workspace_color_1 "workspace")
-; (defvar workspace_color_2 "workspace")
-; (defvar workspace_color_3 "workspace")
-; (defvar workspace_color_4 "workspace")
-; (defvar workspace_color_5 "workspace")
-; (defvar workspace_color_6 "workspace")
-; (defvar workspace_color_7 "workspace")
-; (defvar workspace_color_8 "workspace")
-; (defvar workspace_color_9 "workspace")
-
-
-; (defwindow updater
-;   :geometry (
-;     geometry :x "-20px" 
-;     :y "7%" 
-;     :anchor "top right"
-;     :width "270px" 
-;     :height "60px")
-;   (updater)
-; )
-
-
-; (defwidget updater []
-;   (box
-;     current_info
-;     occupied_info
-;   )
-; )
 
 (defwidget workspace_button [window_number]
   (button 
@@ -432,7 +416,6 @@
         )}
       {(matches(current_info, replace("number+", "number", window_number)) ? "" : "")}
   )
-
 )
 
 
@@ -510,6 +493,8 @@
 
 (defpoll battery :initial "0" :interval "15s" "scripts/battery --bat")
 (defpoll battery_status :initial "0" :interval "1m" "scripts/battery --bat-st")
+(defvar has_battery true)
+
 (defwindow bar
   :monitor 0
   :windowtype "dock"
@@ -535,6 +520,132 @@
 
 (defvar system_reveal "false")
 
+(defwidget system_popup_icon [text value]
+  (circular-progress 
+    :value value
+    :class "css_system_popup_circle"
+    :thickness 9
+    (label 
+      :text text
+      :class "css_system_popup_icon"
+      :xalign 0.5
+      :yalign 0.5
+      :show_truncated false
+      :wrap false
+    )
+  )
+)
+
+(defwidget system_popup_text_box []
+  (box 
+    :orientation "v" 
+    :space-evenly "false" 
+    :spacing 0 
+    :hexpand "false" 
+    :vexpand "false"
+  
+    (children)
+  )
+)
+
+(defwidget system_popup_top_text [text ?limit-width]
+  (label 
+    :text text
+    :halign "start"
+    :class "css_system_popup_top_text"
+    :limit-width {limit-width != "" ? limit-width : 100}
+    :show_truncated false
+    :wrap false
+  )
+)
+
+(defwidget system_popup_botoom_text [text ?limit-width]
+  (label
+    :text text
+    :halign "start"
+    :class "css_system_popup_bottom_text"
+    :limit-width {limit-width != "" ? limit-width : 100}
+    :show_truncated false
+    :wrap false
+  )
+)
+
+
+(defwidget system_popup_seperator []
+  (label 
+    :text "" 
+    :class "css_system_seperator" 
+    :halign "center" 
+  )
+)
+
+(defwidget system_popup_battery_section []
+  (box 
+    :class "css_system_popup_section_box css_system_popup_battery" 
+    :orientation "h" 
+    :space-evenly "false"
+    (system_popup_icon
+      :text "󰂄"
+      :value {round(EWW_BATTERY.total_avg, 0)}
+    )
+    (system_popup_text_box
+      (system_popup_top_text
+        :text "battery"
+      )
+      (system_popup_botoom_text
+        :text "${round(EWW_BATTERY.total_avg, 0)}%"
+      )
+      (system_popup_botoom_text
+        :text "${battery_status}"
+      )
+    )
+  )
+)
+
+(defwidget system_popup_disk_section []
+  (box 
+    :class "css_system_popup_section_box css_system_popup_disk" 
+    :orientation "h" 
+    :space-evenly "false"
+    (system_popup_icon
+      :text ""
+      :value {round((1 - (EWW_DISK["/"].free / EWW_DISK["/"].total)) * 100, 0)}
+    )
+    (system_popup_text_box
+      (system_popup_top_text
+        :text "disk usage"
+      )
+      (system_popup_botoom_text
+        :text "${round((1 - (EWW_DISK["/"].free / EWW_DISK["/"].total)) * 100, 0)}%"
+      )
+    )
+  )
+)
+
+(defwidget system_popup_memory_section []
+  (box 
+    :class "css_system_popup_section_box css_system_popup_memory" 
+    :orientation "h" 
+    :space-evenly "false"
+    (system_popup_icon
+      :text "󰍛"
+      :value {memory}
+    )
+    (system_popup_text_box
+      (system_popup_top_text
+        :text "memory usage"
+      )
+      (system_popup_botoom_text
+        :text "${memory_used_mb} | ${memory_total_mb}mb "
+      )
+      (system_popup_botoom_text
+        :text "${memory_free_mb}mb free"
+      )
+    )
+  )
+)
+
+
 
 (defwidget system []
   (eventbox 
@@ -544,9 +655,8 @@
       :transition "crossfade"
       :duration "400ms"
       :reveal {system_reveal}
-      
       (box
-        :class "sys_win" 
+        :class "css_system_popup_main" 
         :orientation "v" 
         :space-evenly "false" 
         :hexpand "false" 
@@ -556,150 +666,13 @@
           :transition "none"
           :duration "0ms"
           :reveal {has_battery}
-          (box 
-            :class "system_popup_section_box system_popup_battery" 
-            :orientation "h" 
-            :space-evenly "false"
-            (circular-progress 
-              :value {round(EWW_BATTERY.total_avg, 0)}
-              :class "sys_bat"
-              :thickness 9
-              (label 
-                :text "󰂄"
-                :class "system_popup_battery system_popup_icon"
-                :xalign 0.5
-                :yalign 0.5
-                :show_truncated false
-                :wrap false)
-            )
-            (box 
-              :orientation "v" 
-              :space-evenly "false" 
-              :spacing 0 
-              :hexpand "false" 
-              :vexpand "false"
-              (label 
-                :text "battery"
-                :halign "start"
-                :class "system_popup_battery system_popup_top_text"
-                :limit-width 9
-                :show_truncated false
-                :wrap false
-              )
-              (label 
-                :text "${round(EWW_BATTERY.total_avg, 0)}%"
-                :halign "start"
-                :class "system_popup_bottom_text"
-                :limit-width 22
-                :show_truncated false
-                :wrap false
-              )
-              (label 
-                :text "${battery_status}"
-                :halign "start"
-                :class "system_popup_bottom_text"
-                :limit-width 22
-                :show_truncated false
-                :wrap false
-              )
-            )
-          )
+          (system_popup_battery_section)
         )
-        (label :text "" :class "sys_sep" :halign "center" )
-        (box 
-          :class "system_popup_section_box system_popup_disk" 
-          :orientation "h" 
-          :space-evenly "false"
-          (circular-progress 
-            :value {round((1 - (EWW_DISK["/"].free / EWW_DISK["/"].total)) * 100, 0)}
-            :class "sys_disk"
-            :haling "start"
-            :thickness 9
-            (label 
-              :class "system_popup_icon"
-              :show_truncated false
-              :wrap false
-              :halign 0.5
-              :valign 0.5
-              :text ""
-            )
-          )
-          (box 
-            :orientation "v" 
-            :space-evenly "false" 
-            :spacing 0 
-            :hexpand "false" 
-            :vexpand "false"
-            (label 
-              :text "disk usage"
-              :halign "start"
-              :class "system_popup_top_text"
-              :limit-width 16
-              :show_truncated false
-              :wrap false
-            )
-            (label 
-              :text "${round((1 - (EWW_DISK["/"].free / EWW_DISK["/"].total)) * 100, 0)}%"
-              :halign "start"
-              :class "system_popup_bottom_text"
-              :limit-width 22
-              :show_truncated false
-              :wrap false
-            )
-          )
-        )
-        (label :text "" :class "sys_sep" :halign "center")
-        (box 
-          :class "system_popup_section_box system_popup_memory" 
-          :orientation "h" 
-          :space-evenly "false" 
-          :halign "start"
-          (circular-progress 
-            :value memory
-            :class "sys_mem"
-            :haling "start"
-            :thickness 9
-            (label
-              :class "system_popup_icon"
-              :show_truncated false
-              :wrap false
-              :xalign 0.5
-              :yalign 0.5
-              :text "󰍛"
-            )
-          )
-          (box 
-            :orientation "v" 
-            :space-evenly "false" 
-            :spacing 0 
-            :hexpand "false" 
-            :vexpand "false"
-            (label 
-              :text "memory"
-              :halign "start"
-              :class "system_popup_top_text"
-              :limit-width 9
-              :show_truncated false
-              :wrap false
-            )
-            (label 
-              :text "${memory_used_mb} | ${memory_total_mb}mb "
-              :halign "start"
-              :class "system_popup_bottom_text"
-              :limit-width 22
-              :show_truncated false
-              :wrap false)
-            (label 
-              :text "${memory_free_mb}mb free"
-              :halign "start"
-              :class "system_popup_bottom_text"
-              :limit-width 22
-              :show_truncated false
-              :wrap false
-            ) 
-          )
-        )
-        (label :text "" :class "sys_sep" :halign "center")
+        (system_popup_seperator)
+        (system_popup_disk_section)
+        (system_popup_seperator)
+        (system_popup_memory_section)
+        (system_popup_seperator)
       )
     )
   )
