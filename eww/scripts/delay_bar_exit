@@ -1,4 +1,4 @@
-#/bin/sh
+#!/bin/sh
 
 currentId=`eww get lastHoverID`
 sleep 2

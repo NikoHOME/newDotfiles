@@ -5,42 +5,10 @@
 
 # output="1"
 
-
-# update_widget_state()
-# {
-
-#     focused=$(eww get "current_info")
-
-#     for i in {0..9}; do
-#         widget_current_state[$i]="color: #3e424f;"
-#     done
-
-#     for i in $output; do
-#         widget_current_state[$i]="color: #bfc9db;"
-#     done
-
-    
-#     widget_current_state[$focused]="color: #a1bdce;"
-
-#     for i in {0..9}; do
-
-#         eww update "workspace_color_$i=${widget_current_state[$i]}"
-#         # widget_previous_state[$i]=${widget_current_state[$i]}
-#         # echo "<${widget_previous_state[$i]}> <${widget_current_state[$i]}>"
-#     done
-
-    
-
-# }
-
-
-# update_widget_state
-
-# update_widget_state
+#!/bin/sh
 
 update_occupied() {
     output=$(bspc query -D -d .occupied --names)
-    # update_widget_state
     echo $output
 }
 
@@ -50,11 +18,3 @@ update_occupied
 bspc subscribe desktop node | while read -r _ ; do
     update_occupied
 done
-
-# bspc subscribe desktop node_remove | while read -r _ ; do
-#     update_occupied
-# done
-
-# bspc subscribe node node_transfer | while read -r _ ; do
-#     update_occupied
-# done

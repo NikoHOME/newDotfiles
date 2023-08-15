@@ -1,3 +1,0 @@
-#/bin/sh
-
-echo $(xrandr --current > /dev/null | grep '*' | uniq | awk '{print $1}' | cut -d 'x' -f2)

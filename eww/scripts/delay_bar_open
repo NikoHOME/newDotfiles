@@ -1,4 +1,4 @@
-#/bin/sh
+#!/bin/sh
 
 ./scripts/toggle_fade --bar-on &
 

@@ -1,43 +1,8 @@
 
 
-; (defwidget bar-hoverbox []
-;   (box
-;     :class "bar-eventbox"
-;     (eventbox
-;       ; :onhover "scripts/delay_bar_open &" 
-;     )
-    
-;   )
-; )
 
 
 
-
-; (defwindow bar-hoverbox
-;   :monitor 0
-;   :windowtype "dock"
-;   :stacking "fg"
-;   :geometry (geometry 
-;     :x "0%"
-;     :y "0%"
-;     :width "100%"
-;     :height "1px"
-;     :anchor "top center"
-;   )                   
-;   :reserve (struts 
-;     :side "top" 
-;     :distance "1px"
-;   )
-;   (bar-hoverbox)
-; )
-
-
-
-; (defvar lastHoverID 0)
-
-; (defpoll mouse_position :interval "0.5s" "scripts/get_mouse_pos")
-; (defpoll screen_height :interval "1m" "scripts/get_screen_height")
-; (deflisten bar_hover :initial "0.00" "scripts/bar_reveal")
 (defvar screen_height "1080")
 (defvar bar_hover false)
 (defvar bar_reveal false)
@@ -45,11 +10,6 @@
 
 (defwidget bar []
   (eventbox
-    ; :onhover "eww update bar_hover=true; scripts/delay_bar_open &" 
-    ; :onhoverlost "eww update bar_hover=false; scripts/delay_bar_exit &"
-    ;:class {(bar_reveal ? "main-bar" : "hide-bar" )}
-    ; :class "main-bar"
-
     (revealer
       :transition "crossfade"
       :duration "400ms"
@@ -110,48 +70,10 @@
     :height "30px"
     :anchor "top center"
   )                    
-  ; :reserve (struts 
-  ;   :side "top" 
-  ;   :distance "6%"
-  ; )
   (bar)
   
 )
 
-; (defwindow bar-background
-;   :monitor 0
-;   :windowtype "dock"
-;   :stacking "fg"
-;   :geometry (geometry 
-;     :x "0%"
-;     :y "1%"
-;     :width "95%"
-;     :height "30px"
-;     :anchor "top center"
-;   )                    
-;   ; :reserve (struts 
-;   ;   :side "top" 
-;   ;   :distance "6%"
-;   ; )
-;   (bar-background)
-; )
-
-; (defwidget bar-background []
-;   (revealer
-;     :transition "crossfade"
-;     :duration "400ms"
-;     :reveal {bar_reveal}
-;     :hexpand false
-;     :vexpand false
-    
-;     (box 
-;       :orientation "h"
-;       :hexpand false
-;       :vexpand false
-;       :class "main-bar-background"
-;     )
-;   )
-; )
 
     
 (defwidget seperator []
@@ -268,7 +190,7 @@
       :orientation "h" 
       :spacing "3" 
       (button   
-        :onclick "scripts/pop audio"  
+        :onclick "pavucontrol &"  
         :wrap "false"  
         ""
       )
@@ -442,11 +364,16 @@
 
 
 (defwidget metric [label value onchange]
-  (box :orientation "h"
-      :class "metric"
-      :space-evenly false
-    (box :class "label" label)
-    (scale :min 0
+  (box 
+    :orientation "h"
+    :class "metric"
+    :space-evenly false
+    (box 
+      :class "label" 
+      label
+    )
+    (scale 
+      :min 0
       :max 101
       :active {onchange != ""}
       :value value
@@ -456,12 +383,16 @@
 )
 
 (defwidget metric-v [label value onchange]
-  (box :orientation "h"
+  (box 
+    :orientation "h"
     :class "metric-v"
     :space-evenly false
     :vexpand false
     :hexpand false
-    (box :class "label" label)
+    (box 
+      :class "label" 
+      label
+    )
     (scale 
       :min 0
       :max 101
@@ -536,6 +467,24 @@
   )
 )
 
+(defwidget system_popup_image [path value width height]
+  (circular-progress 
+    :value value
+    :class "css_system_popup_circle"
+    :thickness 9
+    (image
+      :path path
+      :image-width width
+      :image-height height
+      :class "css_system_popup_icon"
+      :xalign 0.5
+      :yalign 0.5
+      :show_truncated false
+      :wrap false
+    )
+  )
+)
+
 (defwidget system_popup_text_box []
   (box 
     :orientation "v" 
@@ -584,8 +533,10 @@
     :class "css_system_popup_section_box css_system_popup_battery" 
     :orientation "h" 
     :space-evenly "false"
-    (system_popup_icon
-      :text "󰂄"
+    (system_popup_image
+      :path "img/battery-beige.svg"
+      :width 30
+      :height 30
       :value {round(EWW_BATTERY.total_avg, 0)}
     )
     (system_popup_text_box
@@ -607,8 +558,10 @@
     :class "css_system_popup_section_box css_system_popup_disk" 
     :orientation "h" 
     :space-evenly "false"
-    (system_popup_icon
-      :text ""
+    (system_popup_image
+      :path "img/database-purple.svg"
+      :width 30
+      :height 30
       :value {round((1 - (EWW_DISK["/"].free / EWW_DISK["/"].total)) * 100, 0)}
     )
     (system_popup_text_box
@@ -627,8 +580,10 @@
     :class "css_system_popup_section_box css_system_popup_memory" 
     :orientation "h" 
     :space-evenly "false"
-    (system_popup_icon
-      :text "󰍛"
+    (system_popup_image
+      :width 30
+      :height 30
+      :path "img/memory-green.svg"
       :value {memory}
     )
     (system_popup_text_box
@@ -666,13 +621,21 @@
           :transition "none"
           :duration "0ms"
           :reveal {has_battery}
-          (system_popup_battery_section)
+          (box
+            :class "css_system_popup_main" 
+            :orientation "v" 
+            :space-evenly "false" 
+            :hexpand "false" 
+            :vexpand "false" 
+            (system_popup_battery_section)
+            (system_popup_seperator)
+          )
+          
         )
-        (system_popup_seperator)
         (system_popup_disk_section)
         (system_popup_seperator)
         (system_popup_memory_section)
-        (system_popup_seperator)
+        ; (system_popup_seperator)
       )
     )
   )

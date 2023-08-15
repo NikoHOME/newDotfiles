@@ -1,15 +1,17 @@
 #! /bin/sh
 
-
+#sxhkd hotkeys
 pgrep -x sxhkd > /dev/null || sxhkd &
+
+#bspc configuration 
 
 bspc monitor -d 0 1 2 3 4 5 6 7 8 9 
 
 bspc config border_width         2
-bspc config top_padding        	40
 bspc config left_padding        4
 bspc config right_padding       4
 bspc config window_gap          6
+#bspc config top_padding        	40
 
 bspc config split_ratio          0.52
 bspc config borderless_monocle   true
@@ -24,23 +26,26 @@ bspc rule -a Kupfer.py focus=on
 bspc rule -a Screenkey manage=off
 
 
-
+#X11 Compositor
 picom -b
+
+#Eww top bar
 pkill eww
 
-eww d --debug &
+eww d &
 
-# eww open bar-eventbox 
-# eww open bar-background --debug
-eww open bar --debug
-eww open bar-hoverbox --debug
+eww open bar # --debug
+eww open bar-hoverbox # --debug
+
+#Add top padding after eww so it doesn't interfere with it
+bspc config top_padding 40
 
 
-
+#Wallpaper
 feh --bg-scale ~/.config/eww/background.jpg
+
+#System tray
 trayer --edge top --align center --widthtype percent --width 10 --padding 5 --distance 11 --tint 000000 --alpha 21 --transparent true --iconspacing 2 &
-# sleep 0.5
-# eww reload &
 
 
 
