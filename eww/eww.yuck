@@ -290,9 +290,11 @@
 
 
 (defvar time_reveal false)
-(defpoll clock_time :interval "5m" "date +\%H")
-(defpoll clock_minute :interval "5s" "date +\%M")
+; (defpoll clock_time :interval "5m" "date +\%H")
+; (defpoll clock_minute :interval "5s" "date +\%M")
 (defpoll clock_date :interval "10h" "date '+%b %d'")
+
+(defpoll clock_hour_minute :interval "5s" "date +\%H' ':' '%M")
 
 (defwidget clock_module []
   (eventbox 
@@ -305,9 +307,10 @@
       :orientation "h" 
       :spacing "3"
       
-      (label :text clock_time :class "clock_time_class" )
-      (label :text ":" :class "clock_time_sep" )
-      (label :text clock_minute :class "clock_minute_class")
+      (label :text clock_hour_minute)
+      ; (label :text clock_time :class "clock_time_class" )
+      ; (label :text ":" :class "clock_time_sep" )
+      ; (label :text clock_minute :class "clock_minute_class")
       (revealer 
         :transition "slideleft"
         :reveal time_reveal
