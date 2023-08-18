@@ -290,7 +290,7 @@
 
 
 (defvar time_reveal false)
-; (defpoll clock_time :interval "5m" "date +\%H")
+; (defpoll clock_time :interval "5m" "date +\%H")7
 ; (defpoll clock_minute :interval "5s" "date +\%M")
 (defpoll clock_date :interval "10h" "date '+%b %d'")
 
