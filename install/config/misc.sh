@@ -2,4 +2,4 @@
 
 #misc config script 
 
-betterlockscreen -u ~/.config/bspwm/background.jpg
+betterlockscreen -u ~/.config/eww/background.jpg
