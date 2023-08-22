@@ -1,0 +1,14 @@
+#!/bin/sh
+if [ $(eww get "bar_reveal_keep") = "true" ]; then
+    eww update "bar_reveal_keep=false"
+    bspc config top_padding 4
+    xdo lower -N "eww-bar"
+    xdo hide -N "trayer"
+else
+    eww update "bar_reveal_keep=true"
+    bspc config top_padding 40
+    # xdo raise -N "eww-bar-hoverbox"
+    xdo raise -N "eww-bar"
+    xdo raise -N "trayer"
+    xdo show -N "trayer"
+fi

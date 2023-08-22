@@ -1,0 +1,646 @@
+
+
+
+
+
+(defvar screen_height "1080")
+(defvar bar_hover false)
+(defvar bar_reveal false)
+(defvar bar_reveal_keep true)
+
+(defwidget bar []
+  (eventbox
+    (revealer
+      :transition "crossfade"
+      :duration "400ms"
+      :reveal {bar_reveal_keep ? true : bar_reveal}
+      :hexpand false
+      :vexpand false
+      :class "main-bar transparent"
+      (centerbox 
+        :orientation "h"
+        ;:space-evenly false
+        ; :halign "middle"
+        (box 
+          :orientation "h"
+          :hexpand false
+          :vexpand false
+          :halign "start"
+          :class "main-bar-left"
+          (workspaces)
+        )
+        (box
+          :hexpand false
+          :vexpand false
+          :halign "middle"
+          :class "main-bar-center"
+          :width 220
+        )
+        (box 
+          :orientation "h"
+          :hexpand false
+          :vexpand false
+          :halign "end"
+          :class "main-bar-right"
+          (right)
+          (script_activator)
+        )
+      )
+    )
+  )
+)
+
+(deflisten on_start :initial "0" "scripts/on_start")
+
+(defwidget script_activator []
+ (box
+  :visible false
+  {on_start}  
+ )
+)
+
+(defwindow bar
+  :monitor 0
+  :windowtype "dock"
+  :stacking "fg"
+  :geometry (geometry 
+    :x "0%"
+    :y "1%"
+    :width "99%"
+    :height "30px"
+    :anchor "top center"
+  )                    
+  (bar)
+  
+)
+
+
+    
+(defwidget seperator []
+
+  (label
+    :class "seperator"
+    :text ":"
+  )
+)
+
+
+(defwidget right []
+  (box 
+    :class "right transparent"
+    :orientation "h"
+    :space-evenly false
+    :spacing 10
+
+    
+    (volume_module)
+    (seperator)
+    (wifi_module)
+    (seperator)
+    (battery_module)
+    (disk_module)
+    (ram_module)
+    (seperator)
+    (clock_module)
+  )
+)
+    
+
+
+(defwidget battery_module []
+  (box 
+    :class "bat-module" 
+    :vexpand "false" 
+    :hexpand "false" 
+    :visible {has_battery}
+    (button 
+        ; :limit-width 2
+        :tooltip "battery on ${battery}%"
+        :onclick "scripts/toggle_fade --system-on &"
+        ; :show_truncated false
+        ; :wrap false
+    
+      (metric-v 
+        :label "󰂄 " ; 
+        :value {round(EWW_BATTERY.total_avg, 0)}
+        :onchange ""
+      )
+    )
+  )
+)
+
+
+(defwidget disk_module []
+  (box 
+    :class "disk-module" 
+    :vexpand "false" 
+    :hexpand "false"  
+    (button 
+        :limit-width 2
+        :tooltip "using ${round((1 - (EWW_DISK["/"].free / EWW_DISK["/"].total)) * 100, 0)}% disk space"
+        :onclick "scripts/toggle_fade --system-on &"
+        :show_truncated false
+        :wrap false
+        (metric-v 
+          :label "󰆼 "
+          :value {round((1 - (EWW_DISK["/"].free / EWW_DISK["/"].total)) * 100, 0)}
+          :onchange ""
+        )
+      )
+          
+  )
+)
+
+(defpoll memory :initial "0" :interval "5s" "scripts/memory" )
+
+(defwidget ram_module []
+  (box 
+    :class "ram-module" 
+    :vexpand "false" 
+    :hexpand "false" 
+    (button 
+        :limit-width 2
+        :tooltip "using ${memory}% ram"
+        :onclick "scripts/toggle_fade --system-on &"
+        :show_truncated false
+        :wrap false
+        (metric-v 
+          :label "󰍛 "
+          :value memory
+          :onchange ""
+        )
+    )
+  )
+)
+
+(defvar vol_reveal false)
+(defpoll volume :initial "0" :interval "1s" "scripts/getvol")
+
+(defwidget volume_module []
+  (eventbox 
+      :onhover "eww update vol_reveal=\"true\""
+			:onhoverlost "eww update vol_reveal=\"false\""
+      :tooltip "${volume}%"
+      :class "volume-module"
+
+    (box 
+      :space-evenly "false" 
+      :hexpand "false" 
+      :vexpand true
+      :orientation "h" 
+      :spacing "3" 
+      (button   
+        :onclick "pavucontrol &"  
+        :wrap "false"  
+        ""
+      )
+      (revealer 
+          :transition "slideleft"
+          :reveal vol_reveal
+          :duration "400ms"
+        (metric
+          :class "volbar"
+          :value volume
+          :orientation "h"
+          
+          :label ""
+          :onchange "amixer sset Master {}%"
+        )
+      )
+    )
+  )
+)
+
+(defvar wifi_reveal false)
+
+(defpoll COL_WLAN :interval "2s" "scripts/wifi --COL")
+(defpoll ESSID_WLAN :interval "2s" "scripts/wifi --ESSID")
+(defpoll WLAN_ICON :interval "2s" "scripts/wifi --ICON")
+
+(defwidget wifi_module [] 
+  (eventbox 
+    :onhover "eww update wifi_reveal=\"true\""
+		:onhoverlost "eww update wifi_reveal=\"false\""
+    :onclick "scripts/network-dmenu"
+    :class "module-wifi" 
+		(box 
+      :vexpand "false" 
+      :hexpand "false" 
+      :space-evenly "false"
+			(button 
+        :onclick "networkmanager_dmenu" 
+        :wrap "false" 
+        :style "color: ${COL_WLAN};" 
+        WLAN_ICON
+      )
+      (revealer 
+        :transition "slideright"
+        :reveal wifi_reveal
+        :duration "400ms"
+        (label    
+          :class "module_essid"
+			    :text ESSID_WLAN
+			  )
+        
+      )
+    )
+  )
+)
+
+(defvar calendar_reveal false)
+(defpoll calendar_day :interval "20h" "date '+%d'")
+(defpoll calendar_year :interval "20h" "date '+%Y'")
+
+
+(defwidget calendar_module []
+  (eventbox 
+    :onhoverlost "scripts/toggle_fade --calendar-off &"
+    (revealer
+      :transition "crossfade"
+      :duration "400ms"
+      :reveal {calendar_reveal}
+      (box 
+        :class "cal" 
+        :orientation "v"
+        (box 
+          :class "cal-in"
+          (calendar 
+            :class "cal" 
+            :day calendar_day 
+            :year calendar_year
+          )
+        )
+      )
+    )
+  )
+)
+
+
+(defwindow calendar
+	:geometry (
+      geometry :x "-20px" 
+      :y "7%" 
+      :anchor "top right"
+      :width "270px" 
+      :height "60px")
+  (calendar_module)
+)
+
+
+
+
+(defvar time_reveal false)
+; (defpoll clock_time :interval "5m" "date +\%H")7
+; (defpoll clock_minute :interval "5s" "date +\%M")
+(defpoll clock_date :interval "10h" "date '+%b %d'")
+
+(defpoll clock_hour_minute :interval "5s" "date +\%H' ':' '%M")
+
+(defwidget clock_module []
+  (eventbox 
+    :onhover "eww update time_reveal=\"true\""
+    :onhoverlost "eww update time_reveal=\"false\""
+    :class "time-module"
+    (box 
+      :class "module" 
+      :space-evenly "false" 
+      :orientation "h" 
+      :spacing "3"
+      
+      (label :text clock_hour_minute)
+      ; (label :text clock_time :class "clock_time_class" )
+      ; (label :text ":" :class "clock_time_sep" )
+      ; (label :text clock_minute :class "clock_minute_class")
+      (revealer 
+        :transition "slideleft"
+        :reveal time_reveal
+        :duration "350ms"
+        (button 
+          :class "clock_date_class"
+          :onclick "scripts/toggle_fade --calendar-on &" 
+          clock_date 
+        )
+      )
+    )
+  )
+)
+
+(deflisten occupied_info :initial "0 1 2 3 4 5 6 7 8 9" "scripts/get_occupied_workspace" )
+(deflisten current_info :initial "0" "scripts/get_current_workspace")
+
+
+(defwidget workspace_button [window_number]
+  (button 
+      :label {replace("number+", "number", window_number)}
+      :onclick {replace ("bspc desktop \"number\" -f", "number", window_number)}
+      :class 
+        {(
+          matches(
+            occupied_info, replace("number+", "number", window_number)
+          ) ? "workspace_occupied" : (current_info == window_number ? "workspace_current" : "workspace")
+        )}
+      {(matches(current_info, replace("number+", "number", window_number)) ? "" : "")}
+  )
+)
+
+
+(defwidget workspaces []
+  (box 
+    :class "workspaces"
+    :orientation "h"
+    :space-evenly true
+    :halign "start"
+    :spacing 10
+    (workspace_button :window_number "0" );:window_color {workspace_color_0})
+    (workspace_button :window_number "1" );:window_color {workspace_color_1})
+    (workspace_button :window_number "2" );:window_color {workspace_color_2})
+    (workspace_button :window_number "3" );:window_color {workspace_color_3})
+    (workspace_button :window_number "4" );:window_color {workspace_color_4})
+    (workspace_button :window_number "5" );:window_color {workspace_color_5})
+    (workspace_button :window_number "6" );:window_color {workspace_color_6})
+    (workspace_button :window_number "7" );:window_color {workspace_color_7})
+    (workspace_button :window_number "8" );:window_color {workspace_color_8})
+    (workspace_button :window_number "9" );:window_color {workspace_color_9})
+  )
+)
+
+
+
+(defwidget metric [label value onchange]
+  (box 
+    :orientation "h"
+    :class "metric"
+    :space-evenly false
+    (box 
+      :class "label" 
+      label
+    )
+    (scale 
+      :min 0
+      :max 101
+      :active {onchange != ""}
+      :value value
+      :onchange onchange
+    )
+  )
+)
+
+(defwidget metric-v [label value onchange]
+  (box 
+    :orientation "h"
+    :class "metric-v"
+    :space-evenly false
+    :vexpand false
+    :hexpand false
+    (box 
+      :class "label" 
+      label
+    )
+    (scale 
+      :min 0
+      :max 101
+      :active {onchange != ""}
+      :value value
+      :orientation "v"
+      :flipped true
+      :onchange onchange
+      :vexpand false
+      :hexpand false
+    )
+  )
+)
+
+
+
+
+
+(defwindow system
+	:geometry (geometry 
+    :x "-20px" 
+    :y "7%" 
+    :anchor "top right"
+    :width "290px"
+  )
+  :stacking "overlay"
+  (system)
+)
+
+(defpoll battery :initial "0" :interval "15s" "scripts/battery --bat")
+(defpoll battery_status :initial "0" :interval "1m" "scripts/battery --bat-st")
+(defvar has_battery true)
+
+(defwindow bar
+  :monitor 0
+  :windowtype "dock"
+  :geometry (geometry 
+    :x "0%"
+    :y "1%"
+    :width "95%"
+    :height "30px"
+    :anchor "top center"
+  )                    
+  :reserve (struts 
+    :side "top" 
+    :distance "6%"
+  )
+  (bar)
+)
+
+
+
+(defpoll memory_used_mb :interval "10s" "scripts/mem-ad --used")
+(defpoll memory_total_mb :interval "10s" "scripts/mem-ad --total")
+(defpoll memory_free_mb :interval "10s" "scripts/mem-ad --free")
+
+(defvar system_reveal "false")
+
+(defwidget system_popup_icon [text value]
+  (circular-progress 
+    :value value
+    :class "css_system_popup_circle"
+    :thickness 9
+    (label 
+      :text text
+      :class "css_system_popup_icon"
+      :xalign 0.5
+      :yalign 0.5
+      :show_truncated false
+      :wrap false
+    )
+  )
+)
+
+(defwidget system_popup_image [path value width height]
+  (circular-progress 
+    :value value
+    :class "css_system_popup_circle"
+    :thickness 9
+    (image
+      :path path
+      :image-width width
+      :image-height height
+      :class "css_system_popup_icon"
+      :xalign 0.5
+      :yalign 0.5
+      :show_truncated false
+      :wrap false
+    )
+  )
+)
+
+(defwidget system_popup_text_box []
+  (box 
+    :orientation "v" 
+    :space-evenly "false" 
+    :spacing 0 
+    :hexpand "false" 
+    :vexpand "false"
+  
+    (children)
+  )
+)
+
+(defwidget system_popup_top_text [text ?limit-width]
+  (label 
+    :text text
+    :halign "start"
+    :class "css_system_popup_top_text"
+    :limit-width {limit-width != "" ? limit-width : 100}
+    :show_truncated false
+    :wrap false
+  )
+)
+
+(defwidget system_popup_botoom_text [text ?limit-width]
+  (label
+    :text text
+    :halign "start"
+    :class "css_system_popup_bottom_text"
+    :limit-width {limit-width != "" ? limit-width : 100}
+    :show_truncated false
+    :wrap false
+  )
+)
+
+
+(defwidget system_popup_seperator []
+  (label 
+    :text "" 
+    :class "css_system_seperator" 
+    :halign "center" 
+  )
+)
+
+(defwidget system_popup_battery_section []
+  (box 
+    :class "css_system_popup_section_box css_system_popup_battery" 
+    :orientation "h" 
+    :space-evenly "false"
+    (system_popup_image
+      :path "img/battery-beige.svg"
+      :width 30
+      :height 30
+      :value {round(EWW_BATTERY.total_avg, 0)}
+    )
+    (system_popup_text_box
+      (system_popup_top_text
+        :text "battery"
+      )
+      (system_popup_botoom_text
+        :text "${round(EWW_BATTERY.total_avg, 0)}%"
+      )
+      (system_popup_botoom_text
+        :text "${battery_status}"
+      )
+    )
+  )
+)
+
+(defwidget system_popup_disk_section []
+  (box 
+    :class "css_system_popup_section_box css_system_popup_disk" 
+    :orientation "h" 
+    :space-evenly "false"
+    (system_popup_image
+      :path "img/database-purple.svg"
+      :width 30
+      :height 30
+      :value {round((1 - (EWW_DISK["/"].free / EWW_DISK["/"].total)) * 100, 0)}
+    )
+    (system_popup_text_box
+      (system_popup_top_text
+        :text "disk usage"
+      )
+      (system_popup_botoom_text
+        :text "${round((1 - (EWW_DISK["/"].free / EWW_DISK["/"].total)) * 100, 0)}%"
+      )
+    )
+  )
+)
+
+(defwidget system_popup_memory_section []
+  (box 
+    :class "css_system_popup_section_box css_system_popup_memory" 
+    :orientation "h" 
+    :space-evenly "false"
+    (system_popup_image
+      :width 30
+      :height 30
+      :path "img/memory-green.svg"
+      :value {memory}
+    )
+    (system_popup_text_box
+      (system_popup_top_text
+        :text "memory usage"
+      )
+      (system_popup_botoom_text
+        :text "${memory_used_mb} | ${memory_total_mb}mb "
+      )
+      (system_popup_botoom_text
+        :text "${memory_free_mb}mb free"
+      )
+    )
+  )
+)
+
+
+
+(defwidget system []
+  (eventbox 
+    :onhoverlost "scripts/toggle_fade --system-off &"
+    :height 10
+    (revealer
+      :transition "crossfade"
+      :duration "400ms"
+      :reveal {system_reveal}
+      (box
+        :class "css_system_popup_main" 
+        :orientation "v" 
+        :space-evenly "false" 
+        :hexpand "false" 
+        :vexpand "false" 
+        :spacing 0
+        (revealer
+          :transition "none"
+          :duration "0ms"
+          :reveal {has_battery}
+          (box
+            :class "css_system_popup_main" 
+            :orientation "v" 
+            :space-evenly "false" 
+            :hexpand "false" 
+            :vexpand "false" 
+            (system_popup_battery_section)
+            (system_popup_seperator)
+          )
+          
+        )
+        (system_popup_disk_section)
+        (system_popup_seperator)
+        (system_popup_memory_section)
+        ; (system_popup_seperator)
+      )
+    )
+  )
+)
+

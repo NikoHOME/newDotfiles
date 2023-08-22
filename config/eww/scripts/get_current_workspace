@@ -1,0 +1,19 @@
+#!/bin/sh
+
+update_current() {
+
+    current_workspace=$(bspc query -D -d focused --names)
+    echo $current_workspace
+}
+
+#Initial desktop 0
+echo 0
+
+bspc subscribe desktop node_transfer | while read -r _ ; do
+    update_current
+    # ./scripts/delay_bar_open
+    # ./scripts/delay_bar_exit &
+done
+
+
+

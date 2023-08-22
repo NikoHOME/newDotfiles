@@ -1,0 +1,20 @@
+
+
+# declare -a widget_previous_state
+# declare -a widget_current_state
+
+# output="1"
+
+#!/bin/sh
+
+update_occupied() {
+    output=$(bspc query -D -d .occupied --names)
+    echo $output
+}
+
+
+update_occupied
+
+bspc subscribe desktop node | while read -r _ ; do
+    update_occupied
+done

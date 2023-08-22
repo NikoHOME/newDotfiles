@@ -1,0 +1,17 @@
+#!/bin/sh
+
+currentId=`eww get lastHoverID`
+sleep 2
+newID=`eww get lastHoverID`
+
+hover=`eww get bar_hover`
+
+if [ $hover = "true" ] ; then
+    exec "./scripts/delay_bar_exit"
+fi
+
+if [ $newID = $currentId ] ; then
+    ./scripts/toggle_fade --bar-off
+else
+    exec "./scripts/delay_bar_exit"
+fi

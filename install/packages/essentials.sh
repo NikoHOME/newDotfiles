@@ -40,6 +40,7 @@ Packages=(
     "feh"
     "lightdm-settings"
     "lightdm-slick-greeter"
+    "picom-allusive"
 )
 
 yay --needed --noconfirm -Sy ${Packages[@]}

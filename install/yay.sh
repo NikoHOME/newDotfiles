@@ -3,9 +3,9 @@
 # yay installation script
 # https://aur.archlinux.org/yay
 
-./install-package.sh git base-devel
+./util/install-package.sh git base-devel
 
-./clone-repository.sh https://aur.archlinux.org/yay.git yay /tmp/install
+./util/clone-repository.sh https://aur.archlinux.org/yay.git yay /tmp/install
 
 cd /tmp/install/yay
 makepkg -si

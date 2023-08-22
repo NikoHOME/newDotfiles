@@ -1,0 +1,9 @@
+#!/bin/sh
+
+./scripts/toggle_fade --bar-on &
+
+
+currentId=`eww get lastHoverID`
+currentId=$(($currentId+1))
+eww update lastHoverID=$currentId
+

@@ -3,9 +3,9 @@
 # rofi theme installation script
 # https://github.com/catppuccin/rofi
 
-./install-package.sh rofi
+./util/install-package.sh rofi
 
-./clone-repository.sh https://github.com/catppuccin/rofi.git rofi /tmp
+./util/clone-repository.sh https://github.com/catppuccin/rofi.git rofi /tmp
 
 cd /tmp/rofi/basic
 

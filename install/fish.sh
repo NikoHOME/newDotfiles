@@ -2,7 +2,7 @@
 
 #fish installation script 
 
-./install-package.sh fish
+./util/install-package.sh fish
 
 echo /usr/bin/fish | sudo tee -a /etc/shells
 sudo chsh -s /usr/bin/fish
