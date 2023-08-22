@@ -2,7 +2,11 @@
 
 #fish installation script 
 
-./util/install-package.sh fish
+
+SCRIPT=$(realpath "$0")
+SCRIPTPATH=$(dirname "$SCRIPT")
+
+$SCRIPTPATH/../util/install-package.sh fish
 
 echo /usr/bin/fish | sudo tee -a /etc/shells
 sudo chsh -s /usr/bin/fish

@@ -36,11 +36,17 @@ Packages=(
     "refind"
     "efibootmgr"
     "bspwm"
-    "trayer"
+    "trayer-srg"
     "feh"
+    
+)
+
+Packages_AUR=(
     "lightdm-settings"
     "lightdm-slick-greeter"
     "picom-allusive"
+    "qt5-style-plugins"
 )
 
-yay --needed --noconfirm -Sy ${Packages[@]}
+sudo pacman --needed --noconfirm -Sy ${Packages[@]}
+yay --needed --noconfirm -Sy ${Packages_AUR[@]}

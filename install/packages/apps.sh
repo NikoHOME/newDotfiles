@@ -14,4 +14,4 @@ Packages=(
     "audacity"
 )
 
-yay --needed --noconfirm -Sy ${Packages[@]}
+sudo pacman --needed --noconfirm -Sy ${Packages[@]}
