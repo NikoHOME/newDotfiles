@@ -10,6 +10,8 @@ SCRIPTPATH=$(dirname "$SCRIPT")
 
 cd $SCRIPTPATH
 
+eval apps/yay.sh
+
 for x in packages/*
 do
     printf "\n<==[::]==> $x Starts\n\n"
@@ -30,7 +32,7 @@ cd $SCRIPTPATH
 
 for x in apps/*
 do
-    cd $SCRIPTPATH/apps
+    # cd $SCRIPTPATH/apps
     printf "\n<==[::]==> $x Starts\n\n"
     eval $x
     return_code=$?
@@ -47,7 +49,7 @@ done
 
 for x in config/*
 do
-    cd $SCRIPTPATH/config
+    # cd $SCRIPTPATH/config
     printf "\n<==[::]==> $x Starts\n\n"
     eval $x
     return_code=$?
@@ -58,5 +60,7 @@ do
         exit 1
     fi
 done
+
+lxappearance &
 
 

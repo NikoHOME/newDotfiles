@@ -38,7 +38,9 @@ Packages=(
     "bspwm"
     "trayer-srg"
     "feh"
-    
+    "dolphin"
+    "lxappearance"
+    "gnome-themes-extra"
 )
 
 Packages_AUR=(
@@ -46,6 +48,9 @@ Packages_AUR=(
     "lightdm-slick-greeter"
     "picom-allusive"
     "qt5-style-plugins"
+    "beautyline"
+    "kimi-dark-gtk-theme-git"
+    "qt5-styleplugins"
 )
 
 sudo pacman --needed --noconfirm -Sy ${Packages[@]}

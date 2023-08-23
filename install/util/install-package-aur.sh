@@ -9,7 +9,7 @@ for n in $(seq 1 $#); do
 done
 
 
-sudo pacman -S $packages --nocleanmenu --nodiffmenu --noconfirm --needed
+yay -S $packages --nocleanmenu --nodiffmenu --noconfirm --needed
 
 if pacman -Qs $packageName > /dev/null ; then
     printf "\n<==[::]==> $packageName installed\n\n"
