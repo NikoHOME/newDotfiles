@@ -3,6 +3,9 @@
 
 
 
+#screenshot
+super + l
+  spectacle -r
 
 # show eww bar
 super + p
