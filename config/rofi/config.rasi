@@ -1,0 +1,25 @@
+configuration{
+    modi: "run,drun,window";
+    icon-theme: "Oranchelo";
+    show-icons: true;
+    terminal: "alacritty";
+    drun-display-format: "{icon} {name}";
+    location: 0;
+    disable-history: false;
+    hide-scrollbar: true;
+    display-drun: "   Apps ";
+    display-run: "   Run ";
+    display-window: " 﩯  Window";
+    display-Network: " 󰤨  Network";
+    sidebar-mode: true;
+    lines: 4;
+    eh: 1;
+    //width: 900;
+    //location: 7;
+    //xoffset: 300;
+    //yoffset: -300;
+    //padding: 30;
+}
+
+
+@theme "catppuccin-mocha"
