@@ -3,6 +3,16 @@
 signal=$1
 
 
+open_battery_warning() {
+    eww open battery_warning
+    eww update battery_warning_reveal="true"
+    sleep 10
+    eww update battery_warning_reveal="false"
+    sleep 0.4
+    eww close battery_warning
+}
+
+
 open_calendar() {
     eww open calendar
     eww update calendar_reveal="true"
@@ -86,5 +96,9 @@ elif [ $signal = "--system-on" ]; then
 elif [ $signal = "--system-off" ]; then
 
     close_system
+
+elif [ $signal = "--battery-warning-on" ]; then
+
+    open_battery_warning
 
 fi

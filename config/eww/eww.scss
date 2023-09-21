@@ -8,6 +8,7 @@
   //background-image: url("/home/linus/.config/qtile/img/background.jpg");
   //background-color: transparent;
   background-color: #0f0f17;
+  border: solid #312a57 2px;
   color: #b0b4bc;
   border-radius: 16px;
   font-size: large;
@@ -18,6 +19,7 @@
   //background-image: url("/home/linus/.config/qtile/img/background.jpg");
   //background-color: transparent;
   background-color: #0f0f17;
+  border: solid #312a57 2px;
   color: #b0b4bc;
   border-radius: 16px;
   font-size: large;
@@ -29,6 +31,7 @@
   //background-image: url("/home/linus/.config/qtile/img/background.jpg");
   //background-color: transparent;
   background-color: #0f0f17;
+  border: solid #312a57 2px;
   color: #b0b4bc;
   border-radius: 16px;
   font-size: large;
@@ -92,11 +95,12 @@
   background-color: #afbea2;
 }
 
-.module_essid {
-  color: #a1bdce;
+.bat-module button:hover, .disk-module button:hover, .ram-module button:hover{
+  color:#ffffff;
 }
 
-.module-wifi button {
+
+.module-wifi_box{
   margin-right: 5px;
 }
 
@@ -104,13 +108,24 @@
   margin-right: 5px;
 }
 
+
 .time-module box {
   margin-right: 10px;
 }
 
-.workspaces button:hover {
+.workspaces button:hover, .volume-module button:hover {
   color: #ffffff;
-  
+}
+
+.module-wifi:hover .module-wifi_box {
+  color: #ffffff;
+}
+
+.module_essid:hover {
+  color: #ffffff;
+}
+.module_essid {
+  color: #a1bdce;
 }
 
 .workspaces {
@@ -140,13 +155,21 @@
 }
 
 
+.calendar_box {
+  background-color: #0f0f17;
+  border-radius: 16px;
+  border: solid #7c7c7c 1px;
+}
+
 
 // Calendar
 .cal {
-  background-color: #0f0f17;
+
   font-family: JetBrainsMono Nerd Font;
   font-size: 18px;
   font-weight: normal;
+
+  
 
 .cal-in {
     padding: 0px 10px 0px 10px;
@@ -165,6 +188,7 @@
 
 calender {
     color: #bfc9db;
+    
 }
 calendar:selected {
   color: #a1bdce;
@@ -226,6 +250,8 @@ color: #bfc9db;
 
 .css_system_popup_main {
   background-color: #0f0f17;
+  border-radius: 16px;
+  border: solid #7c7c7c 1px;
 }
 .css_system_popup_circle {
   background-color: #38384d;
@@ -241,7 +267,33 @@ color: #bfc9db;
 .css_system_popup_disk {
   color: #b76cda;
 }
+
+
+
 .css_system_popup_section_box {
   border-radius: 16px;
   margin: 15px 15px 15px 20px;
 }
+
+.css_battery_warning_box {
+  background-color: #0f0f17;
+  border-radius: 16px;
+  border: solid #afbea2 1px;
+}
+
+.css_battery_warning_icon_box {
+  padding-top: 20px;
+}
+
+.css_battery_warning_icon {
+  margin: 50px;
+}
+
+.css_battery_warning_text_box{
+  margin-top: 50px;
+  padding: 10px;
+  font-size: x-large;
+  border: solid #afbea2 2px;
+  border-radius: 16px;
+}
+

@@ -174,12 +174,16 @@
 )
 
 (defvar vol_reveal false)
-(defpoll volume :initial "0" :interval "1s" "scripts/getvol")
+(defvar vol_not_muted true)
+(defvar vol_icon "")
+(defvar vol_before_mute 0)
+(defpoll volume :initial "0" :interval "1s" "scripts/volume_get_update")
 
 (defwidget volume_module []
   (eventbox 
-      :onhover "eww update vol_reveal=\"true\""
+      :onhover "eww update vol_reveal=\"${vol_not_muted}\""
 			:onhoverlost "eww update vol_reveal=\"false\""
+      :onscroll "scripts/volume_scroll --{} &"
       :tooltip "${volume}%"
       :class "volume-module"
 
@@ -190,21 +194,25 @@
       :orientation "h" 
       :spacing "3" 
       (button   
-        :onclick "pavucontrol &"  
-        :wrap "false"  
-        ""
+        :onclick "scripts/volume_mute"
+        :onrightclick "pavucontrol &"  
+        :wrap "false"
+        {vol_icon}
+        ; (label
+        ;   :text {vol_icon}
+        ; )
       )
       (revealer 
-          :transition "slideleft"
-          :reveal vol_reveal
-          :duration "400ms"
+        :transition "slideleft"
+        :reveal vol_reveal
+        :duration "400ms"
         (metric
           :class "volbar"
           :value volume
           :orientation "h"
           
           :label ""
-          :onchange "amixer sset Master {}%"
+          ;:onchange "amixer sset Master {}%"
         )
       )
     )
@@ -218,30 +226,34 @@
 (defpoll WLAN_ICON :interval "2s" "scripts/wifi --ICON")
 
 (defwidget wifi_module [] 
-  (eventbox 
-    :onhover "eww update wifi_reveal=\"true\""
-		:onhoverlost "eww update wifi_reveal=\"false\""
-    :onclick "scripts/network-dmenu"
+  (box
     :class "module-wifi" 
-		(box 
-      :vexpand "false" 
-      :hexpand "false" 
-      :space-evenly "false"
-			(button 
-        :onclick "networkmanager_dmenu" 
-        :wrap "false" 
-        :style "color: ${COL_WLAN};" 
-        WLAN_ICON
-      )
-      (revealer 
-        :transition "slideright"
-        :reveal wifi_reveal
-        :duration "400ms"
-        (label    
-          :class "module_essid"
-			    :text ESSID_WLAN
-			  )
-        
+    (eventbox 
+      :onhover "eww update wifi_reveal=\"true\""
+      :onhoverlost "eww update wifi_reveal=\"false\""
+      :onclick "scripts/network-dmenu"
+      :class "module-wifi" 
+      (box 
+        :vexpand "false" 
+        :hexpand "false" 
+        :space-evenly "false"
+
+        (box 
+          :style {wifi_reveal == "true" ? "" : "color: ${COL_WLAN};"} 
+          :class "module-wifi_box" 
+          :wrap "false" 
+          WLAN_ICON
+        )
+        (revealer 
+          :transition "slideright"
+          :reveal wifi_reveal
+          :duration "400ms"
+          (label    
+            :class "module_essid"
+            :text ESSID_WLAN
+          )
+          
+        )
       )
     )
   )
@@ -260,7 +272,7 @@
       :duration "400ms"
       :reveal {calendar_reveal}
       (box 
-        :class "cal" 
+        :class "cal calendar_box" 
         :orientation "v"
         (box 
           :class "cal-in"
@@ -366,13 +378,12 @@
 
 
 
-(defwidget metric [label value onchange]
+(defwidget metric [label value ?onchange]
   (box 
     :orientation "h"
     :class "metric"
     :space-evenly false
     (box 
-      :class "label" 
       label
     )
     (scale 
@@ -380,12 +391,12 @@
       :max 101
       :active {onchange != ""}
       :value value
-      :onchange onchange
+      :onchange {onchange != "" ? onchange : ""}
     )
   )
 )
 
-(defwidget metric-v [label value onchange]
+(defwidget metric-v [label value ?onchange]
   (box 
     :orientation "h"
     :class "metric-v"
@@ -393,7 +404,6 @@
     :vexpand false
     :hexpand false
     (box 
-      :class "label" 
       label
     )
     (scale 
@@ -403,7 +413,7 @@
       :value value
       :orientation "v"
       :flipped true
-      :onchange onchange
+      :onchange {onchange != "" ? onchange : ""}
       :vexpand false
       :hexpand false
     )
@@ -470,16 +480,16 @@
   )
 )
 
-(defwidget system_popup_image [path value width height]
+(defwidget system_popup_image [path value width height ?thickness ?class]
   (circular-progress 
     :value value
     :class "css_system_popup_circle"
-    :thickness 9
+    :thickness {thickness != "" ? thickness: 9}
     (image
       :path path
       :image-width width
       :image-height height
-      :class "css_system_popup_icon"
+      :class {class != "" ? class: "css_system_popup_icon"} 
       :xalign 0.5
       :yalign 0.5
       :show_truncated false
@@ -625,7 +635,6 @@
           :duration "0ms"
           :reveal {has_battery}
           (box
-            :class "css_system_popup_main" 
             :orientation "v" 
             :space-evenly "false" 
             :hexpand "false" 
@@ -644,3 +653,53 @@
   )
 )
 
+
+(defvar battery_warning_reveal "false")
+(defvar battery_warning_20_fired "false")
+(defvar battery_warning_40_fired "false")
+
+(defwindow battery_warning
+	:geometry (geometry 
+    :x "-2%" 
+    :y "7%" 
+    :anchor "top right"
+    :width "400px"
+    :height "300px"
+  )
+  :stacking "overlay"
+  (battery_warning_module)
+)
+
+(defwidget battery_warning_module []
+  (revealer
+    :transition "crossfade"
+    :duration "400ms"
+    :reveal {battery_warning_reveal}
+    (box
+      :class "css_battery_warning_box css_system_popup_battery" 
+      :orientation "v"
+      :space-evenly "false"
+      (box
+        :class "css_battery_warning_icon_box"
+        :valign "center" 
+        :halign "center"
+        :space-evenly "false"
+        (system_popup_image
+          :path "img/battery-beige.svg"
+          :width 125
+          :height 125
+          :thickness 10
+          :class "css_battery_warning_icon"
+          :value {round(EWW_BATTERY.total_avg, 0)}
+        )
+      )
+      (box
+        :class "css_battery_warning_text_box"
+        :valign "center" 
+        :halign "center"
+        :space-evenly "false"
+        "Battery at ${round(EWW_BATTERY.total_avg, 0)}%"
+      )
+    )
+  )
+)

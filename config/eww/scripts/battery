@@ -1,15 +1,11 @@
 #!/bin/sh
 
+BAT=`ls /sys/class/power_supply | grep BAT | head -n 1`
+
+status=`cat /sys/class/power_supply/${BAT}/status`
+charge=`cat /sys/class/power_supply/${BAT}/capacity`
 
 
-battery() {
-	BAT=`ls /sys/class/power_supply | grep BAT | head -n 1`
-	cat /sys/class/power_supply/${BAT}/capacity
-}
-battery_stat() {
-	BAT=`ls /sys/class/power_supply | grep BAT | head -n 1`
-	cat /sys/class/power_supply/${BAT}/status
-}
 battery_exists() {
 	BAT=`ls /sys/class/power_supply | grep BAT | head -n 1`
 	if [ -z $BAT ]; then
@@ -20,9 +16,27 @@ battery_exists() {
 }
 
 if [[ "$1" == "--bat" ]]; then
-	battery
+	echo $charge
 elif [[ "$1" == "--bat-st" ]]; then
-	battery_stat
+	echo $status
 elif [[ "$1" == "--bat-exists" ]]; then
 	battery_exists
+fi
+
+
+if [ $status == "Discharging" ]; then
+	warning_20_fired=`eww get battery_warning_20_fired`
+	warning_40_fired=`eww get battery_warning_40_fired`
+
+	if [ $warning_40_fired == "false" ] && [ $charge -le "40" ]; then
+		./scripts/toggle_fade --battery-warning-on &
+		eww update battery_warning_40_fired="true"
+	elif [ $warning_20_fired == "false" ] && [ $charge -le "20" ]; then
+		./scripts/toggle_fade --battery-warning-on &
+		eww update battery_warning_20_fired="true"
+	fi
+
+else
+	eww update battery_warning_20_fired="false"
+	eww update battery_warning_40_fired="false"
 fi
