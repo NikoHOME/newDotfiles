@@ -1,0 +1,24 @@
+#!/bin/sh
+
+not_muted=`eww get vol_not_muted`
+
+echo $not_muted
+
+if [ $not_muted == "false" ]; then
+    eww update vol_not_muted="true"
+    eww update vol_reveal="true"
+    volume_before_mute=`eww get vol_before_mute`
+    eww update vol_icon=
+    amixer sset Master $volume_before_mute%
+    eww update volume="$volume_before_mute"
+    
+else
+    eww update vol_not_muted="false"
+    eww update vol_reveal="false"
+    eww update vol_icon=󰖁
+    volume=`./scripts/volume_get`
+    eww update vol_before_mute=$volume
+    amixer sset Master 0%
+
+    eww update volume="0"
+fi

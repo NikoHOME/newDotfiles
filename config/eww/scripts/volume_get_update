@@ -1,0 +1,14 @@
+#!/bin/sh
+volume=`./scripts/volume_get`
+echo $volume
+
+
+if [ $volume != "0" ]; then
+    eww update vol_not_muted="true"
+    eww update vol_icon=
+    
+else
+    eww update vol_not_muted="false"
+    eww update vol_reveal="false"
+    eww update vol_icon=󰖁
+fi
