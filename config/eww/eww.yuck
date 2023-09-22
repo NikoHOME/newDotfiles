@@ -115,7 +115,7 @@
     :visible {has_battery}
     (button 
         ; :limit-width 2
-        :tooltip "battery on ${battery}%"
+        :tooltip "battery on ${round(EWW_BATTERY.total_avg, 0)}%"
         :onclick "scripts/toggle_fade --system-on &"
         ; :show_truncated false
         ; :wrap false
@@ -435,7 +435,7 @@
   (system)
 )
 
-(defpoll battery :initial "0" :interval "15s" "scripts/battery --bat")
+(defpoll battery :initial "0" :interval "10s" "scripts/battery --bat")
 (defpoll battery_status :initial "0" :interval "1m" "scripts/battery --bat-st")
 (defvar has_battery true)
 
