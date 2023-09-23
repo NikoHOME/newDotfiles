@@ -231,7 +231,7 @@
     (eventbox 
       :onhover "eww update wifi_reveal=\"true\""
       :onhoverlost "eww update wifi_reveal=\"false\""
-      :onclick "scripts/network-dmenu"
+      :onclick "scripts/networkmanager-dmenu &"
       :class "module-wifi" 
       (box 
         :vexpand "false" 
