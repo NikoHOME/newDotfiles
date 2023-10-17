@@ -35,6 +35,23 @@ super + Escape
 super + o
 	betterlockscreen -l dim
 
+#Function keys
+
+XF86MonBrightnessDown
+  brightnessctl set 10%-
+
+XF86MonBrightnessUp
+  brightnessctl set +10%
+
+XF86AudioRaiseVolume
+  ~/.config/eww/scripts/volume_scroll --up &
+
+XF86AudioLowerVolume
+  ~/.config/eww/scripts/volume_scroll --down &
+
+XF86AudioMute
+  ~/.config/eww/scripts/volume_mute &
+
 # bspwm hotkeys
 #
 
