@@ -2,8 +2,6 @@
 
 not_muted=`eww get vol_not_muted`
 
-echo $not_muted
-
 if [ $not_muted == "false" ]; then
     eww update vol_not_muted="true"
     eww update vol_reveal="true"
