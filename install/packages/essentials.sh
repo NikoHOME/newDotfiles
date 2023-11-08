@@ -43,6 +43,7 @@ Packages=(
     "gnome-themes-extra"
     "qt5"
     "rustup"
+    "alacritty"
 )
 
 Packages_AUR=(
