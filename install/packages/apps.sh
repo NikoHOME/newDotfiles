@@ -8,7 +8,6 @@ Packages=(
     "krita"
     "inkscape"
     "libreoffice-fresh"
-    "qt"
     "discord"
     "kdenlive"
     "audacity"
