@@ -41,6 +41,8 @@ Packages=(
     "dolphin"
     "lxappearance"
     "gnome-themes-extra"
+    "qt5"
+    "rustup"
 )
 
 Packages_AUR=(
@@ -48,8 +50,8 @@ Packages_AUR=(
     "lightdm-slick-greeter"
     "picom-allusive"
     "qt5-style-plugins"
-    "beautyline"
-    "kimi-dark-gtk-theme-git"
+    #"beautyline"
+    #"kimi-dark-gtk-theme-git"
     "qt5-styleplugins"
 )
 
