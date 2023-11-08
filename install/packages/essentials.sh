@@ -50,6 +50,7 @@ Packages_AUR=(
     "lightdm-slick-greeter"
     "picom-allusive"
     "qt5-style-plugins"
+    "betterlockscreen"
     #"beautyline"
     #"kimi-dark-gtk-theme-git"
     "qt5-styleplugins"
