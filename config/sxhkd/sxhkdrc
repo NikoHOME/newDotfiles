@@ -2,7 +2,12 @@
 # wm independent hotkeys
 
 
-
+#volume mixer
+ctrl + 1
+  pavucontrol &
+#network manager
+ctrl + 2
+  ~/.config/eww/scripts/networkmanager-dmenu &
 #screenshot
 super + l
   spectacle -r
