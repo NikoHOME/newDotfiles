@@ -1,55 +1,48 @@
-#! /bin/sh
+#!/bin/bash
 
-#sxhkd hotkeys
+# sxhkd hotkeys
 pgrep -x sxhkd > /dev/null || sxhkd &
 
-#bspc configuration 
+# bspc configuration 
 
 bspc monitor -d 0 1 2 3 4 5 6 7 8 9 
 
-bspc config border_width         2
+bspc config remove_disabled_monitors true
+bspc config remove_unplugged_monitors true
+bspc config merge_overlapping_monitors true
+bspc config border_width        3
 bspc config left_padding        4
 bspc config right_padding       4
 bspc config window_gap          6
-#bspc config top_padding        	40
 
+bspc config focused_border_color "#1F8999"
 bspc config split_ratio          0.52
 bspc config borderless_monocle   true
 bspc config gapless_monocle      true
+bspc config ignore_ewmh_focus    true 
 
 bspc rule -a eww-bar layer=above state=floating urgent=on sticky=on
 bspc rule -a eww-bar-eventbox layer=above state=floating urgent=on sticky=on
-bspc rule -a Gimp desktop='^8' state=floating follow=on
-bspc rule -a firefox desktop='^2'
-bspc rule -a discord desktop='^5'
-bspc rule -a steam desktop='^6'
+bspc rule -a Simics desktop=^8 follow=off state=floating
+bspc rule -a firefox focus=off desktop=^2 
+bspc rule -a Chromium focus=off desktop=^2 
 bspc rule -a mplayer2 state=floating
 bspc rule -a Kupfer.py focus=on
 bspc rule -a Screenkey manage=off
 bspc rule -a Pavucontrol state=floating
 
 
-#X11 Compositor
-picom -b
+# X11 Compositor
+picom -b &
 
-#Eww top bar
+# Eww top bar
 pkill eww
 
 eww d &
 
-eww open bar # --debug
-eww open bar-hoverbox # --debug
+eww open bar
 
-#Add top padding after eww so it doesn't interfere with it
-bspc config top_padding 40
-
-
-#Wallpaper
-feh --bg-scale ~/.config/eww/background.jpg
-
-#System tray
-trayer --edge top --align center --widthtype percent --width 10 --padding 5 --distance 11 --tint 000000 --alpha 21 --transparent true --iconspacing 2 &
-
+eww open pollvars 
 
 
 

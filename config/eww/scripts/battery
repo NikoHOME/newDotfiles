@@ -15,28 +15,38 @@ battery_exists() {
 	fi
 }
 
-if [[ "$1" == "--bat" ]]; then
-	echo $charge
-elif [[ "$1" == "--bat-st" ]]; then
-	echo $status
-elif [[ "$1" == "--bat-exists" ]]; then
-	battery_exists
-fi
+bat_alert() {
+	if [ $status == "Discharging" ]; then
+		warning_20_fired=`eww get battery_warning_20_fired`
+		warning_40_fired=`eww get battery_warning_40_fired`
 
+		if [ $warning_40_fired == "false" ] && [ $charge -le "40" ]; then
+			notify-send -u critical -t 0 "Battery" \
+				-h "string:wired-note:battery" \
+				-h "string:wired-tag:indicator" \
+				-h int:value:40 \
+				--hint=string:image-path:$HOME/.config/eww/img/battery-beige.svg
+			eww update battery_warning_40_fired="true"
+		elif [ $warning_20_fired == "false" ] && [ $charge -le "20" ]; then
+			notify-send -u critical -t 0 "Battery" \
+				-h "string:wired-note:battery" \
+				-h "string:wired-tag:indicator" \
+				-h int:value:20 \
+				--hint=string:image-path:$HOME/.config/eww/img/battery-beige.svg
+			eww update battery_warning_20_fired="true"
+		fi
 
-if [ $status == "Discharging" ]; then
-	warning_20_fired=`eww get battery_warning_20_fired`
-	warning_40_fired=`eww get battery_warning_40_fired`
-
-	if [ $warning_40_fired == "false" ] && [ $charge -le "40" ]; then
-		./scripts/toggle_fade --battery-warning-on &
-		eww update battery_warning_40_fired="true"
-	elif [ $warning_20_fired == "false" ] && [ $charge -le "20" ]; then
-		./scripts/toggle_fade --battery-warning-on &
-		eww update battery_warning_20_fired="true"
+	else
+		eww update battery_warning_20_fired="false"
+		eww update battery_warning_40_fired="false"
 	fi
+}
 
-else
-	eww update battery_warning_20_fired="false"
-	eww update battery_warning_40_fired="false"
+if [[ "$1" == "--bat-exists" ]]; then
+	battery_exists
+elif [[ "$1" == "--bat-alert" ]]; then
+	bat_alert
 fi
+
+
+

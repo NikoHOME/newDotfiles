@@ -8,7 +8,7 @@ open_battery_warning() {
     eww open battery_warning
     xdo raise -a "Eww - battery_warning"
     eww update battery_warning_reveal="true"
-    sleep 10
+    sleep 5
     eww update battery_warning_reveal="false"
     sleep 0.4
     eww close battery_warning

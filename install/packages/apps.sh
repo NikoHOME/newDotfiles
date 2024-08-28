@@ -4,12 +4,7 @@
 
 Packages=(
     "firefox"
-    "gimp"
-    "krita"
-    "inkscape"
     "libreoffice-fresh"
-    "discord"
-    "kdenlive"
     "audacity"
 )
 

@@ -17,11 +17,11 @@
       :hexpand false
       :vexpand false
       :class "main-bar transparent"
-      (centerbox 
+      (centerbox
         :orientation "h"
         ;:space-evenly false
         ; :halign "middle"
-        (box 
+        (box
           :orientation "h"
           :hexpand false
           :vexpand false
@@ -34,9 +34,9 @@
           :vexpand false
           :halign "middle"
           :class "main-bar-center"
-          :width 220
+	  :width 220
         )
-        (box 
+        (box
           :orientation "h"
           :hexpand false
           :vexpand false
@@ -55,7 +55,7 @@
 (defwidget script_activator []
  (box
   :visible false
-  {on_start}  
+  {on_start}
  )
 )
 
@@ -63,19 +63,40 @@
   :monitor 0
   :windowtype "dock"
   :stacking "fg"
-  :geometry (geometry 
+  :geometry (geometry
     :x "0%"
     :y "1%"
     :width "99%"
     :height "30px"
     :anchor "top center"
-  )                    
+  )
   (bar)
-  
+
 )
 
+;Invisible values to be constantly polled
+(defwindow pollvars
+  :monitor 0
+  :windowtype "dock"
+  :stacking "bg"
+  :geometry (geometry
+    :x "0%"
+    :y "0%"
+    :width "1px"
+    :height "1px"
+    :anchor "top center"
+  )
+  (box
+    :class "pol-vars"
+    (label :text {battery_alert})
+  )
+)
 
-    
+(defpoll battery_alert :initial "0" :interval "10s" "scripts/battery --bat-alert")
+(defvar has_battery true)
+
+
+
 (defwidget seperator []
 
   (label
@@ -86,86 +107,101 @@
 
 
 (defwidget right []
-  (box 
+  (box
     :class "right transparent"
     :orientation "h"
     :space-evenly false
     :spacing 10
 
-    
+
     (volume_module)
     (seperator)
     (wifi_module)
     (seperator)
-    (battery_module)
+    (battery_module
+    	:status {EWW_BATTERY.BAT0.status}
+    	:battery {EWW_BATTERY.BAT0.capacity}
+      :charge "󰂄 "
+      :one "󱟢 "
+      :two "󰂂 "
+      :three "󰁾 "
+      :four "󰁽 "
+      :five "󰁼 "
+      :six "󰁻 "
+      :seven "󰁺 "
+    )
     (disk_module)
     (ram_module)
     (seperator)
     (clock_module)
   )
 )
-    
 
 
-(defwidget battery_module []
-  (box 
-    :class "bat-module" 
-    :vexpand "false" 
-    :hexpand "false" 
+(defwidget battery_module [status battery one two three
+                    four five six seven charge]
+	(box
+		:space-evenly false
+		:spacing 8
+    :class "bat-module"
+    :vexpand "false"
+    :hexpand "false"
     :visible {has_battery}
-    (button 
-        ; :limit-width 2
-        :tooltip "battery on ${round(EWW_BATTERY.total_avg, 0)}%"
-        :onclick "scripts/toggle_fade --system-on &"
-        ; :show_truncated false
-        ; :wrap false
-    
-      (metric-v 
-        :label "󰂄 " ; 
-        :value {round(EWW_BATTERY.total_avg, 0)}
-        :onchange ""
+		(button
+			:tooltip "battery on ${battery}%"
+      :onclick "scripts/toggle_fade --system-on &"
+			(metric-v
+          :text {status == 'Charging' ? charge :
+            battery < 15 ? seven :
+            battery < 30 ? six :
+            battery < 45 ? five :
+           	battery < 60 ? four :
+            battery < 75 ? three :
+            battery < 95 ? two : one}
+          :value {battery}
+          :onchange ""
       )
-    )
-  )
+		)
+	)
 )
 
 
 (defwidget disk_module []
-  (box 
-    :class "disk-module" 
-    :vexpand "false" 
-    :hexpand "false"  
-    (button 
+  (box
+    :class "disk-module"
+    :vexpand "false"
+    :hexpand "false"
+    (button
         :limit-width 2
         :tooltip "using ${round((1 - (EWW_DISK["/"].free / EWW_DISK["/"].total)) * 100, 0)}% disk space"
         :onclick "scripts/toggle_fade --system-on &"
         :show_truncated false
         :wrap false
-        (metric-v 
-          :label "󰆼 "
+        (metric-v
+          :text "󰆼 "
           :value {round((1 - (EWW_DISK["/"].free / EWW_DISK["/"].total)) * 100, 0)}
           :onchange ""
         )
       )
-          
+
   )
 )
 
 (defpoll memory :initial "0" :interval "5s" "scripts/memory" )
 
 (defwidget ram_module []
-  (box 
-    :class "ram-module" 
-    :vexpand "false" 
-    :hexpand "false" 
-    (button 
+  (box
+    :class "ram-module"
+    :vexpand "false"
+    :hexpand "false"
+    (button
         :limit-width 2
         :tooltip "using ${memory}% ram"
         :onclick "scripts/toggle_fade --system-on &"
         :show_truncated false
         :wrap false
-        (metric-v 
-          :label "󰍛 "
+        (metric-v
+          :text "󰍛 "
           :value memory
           :onchange ""
         )
@@ -180,29 +216,29 @@
 (defpoll volume :initial "0" :interval "1s" "scripts/volume_get_update")
 
 (defwidget volume_module []
-  (eventbox 
+  (eventbox
       :onhover "eww update vol_reveal=\"${vol_not_muted}\""
 			:onhoverlost "eww update vol_reveal=\"false\""
       :onscroll "scripts/volume_scroll --{} &"
       :tooltip "${volume}%"
       :class "volume-module"
 
-    (box 
-      :space-evenly "false" 
-      :hexpand "false" 
+    (box
+      :space-evenly "false"
+      :hexpand "false"
       :vexpand true
-      :orientation "h" 
-      :spacing "3" 
-      (button   
+      :orientation "h"
+      :spacing "3"
+      (button
         :onclick "scripts/volume_mute"
-        :onrightclick "pavucontrol &"  
+        :onrightclick "pavucontrol &"
         :wrap "false"
         {vol_icon}
         ; (label
         ;   :text {vol_icon}
         ; )
       )
-      (revealer 
+      (revealer
         :transition "slideleft"
         :reveal vol_reveal
         :duration "400ms"
@@ -210,7 +246,7 @@
           :class "volbar"
           :value volume
           :orientation "h"
-          
+
           :label ""
           ;:onchange "amixer sset Master {}%"
         )
@@ -225,34 +261,34 @@
 (defpoll ESSID_WLAN :interval "2s" "scripts/wifi --ESSID")
 (defpoll WLAN_ICON :interval "2s" "scripts/wifi --ICON")
 
-(defwidget wifi_module [] 
+(defwidget wifi_module []
   (box
-    :class "module-wifi" 
-    (eventbox 
+    :class "module-wifi"
+    (eventbox
       :onhover "eww update wifi_reveal=\"true\""
       :onhoverlost "eww update wifi_reveal=\"false\""
       :onclick "scripts/networkmanager-dmenu &"
-      :class "module-wifi" 
-      (box 
-        :vexpand "false" 
-        :hexpand "false" 
+      :class "module-wifi"
+      (box
+        :vexpand "false"
+        :hexpand "false"
         :space-evenly "false"
 
-        (box 
-          :style {wifi_reveal == "true" ? "" : "color: ${COL_WLAN};"} 
-          :class "module-wifi_box" 
-          :wrap "false" 
+        (box
+          :style {wifi_reveal == "true" ? "" : "color: ${COL_WLAN};"}
+          :class "module-wifi_box"
+          :wrap "false"
           WLAN_ICON
         )
-        (revealer 
+        (revealer
           :transition "slideright"
           :reveal wifi_reveal
           :duration "400ms"
-          (label    
+          (label
             :class "module_essid"
             :text ESSID_WLAN
           )
-          
+
         )
       )
     )
@@ -265,20 +301,20 @@
 
 
 (defwidget calendar_module []
-  (eventbox 
+  (eventbox
     :onhoverlost "scripts/toggle_fade --calendar-off &"
     (revealer
       :transition "crossfade"
       :duration "400ms"
       :reveal {calendar_reveal}
-      (box 
-        :class "cal calendar_box" 
+      (box
+        :class "cal calendar_box"
         :orientation "v"
-        (box 
+        (box
           :class "cal-in"
-          (calendar 
-            :class "cal" 
-            :day calendar_day 
+          (calendar
+            :class "cal"
+            :day calendar_day
             :year calendar_year
           )
         )
@@ -290,10 +326,10 @@
 
 (defwindow calendar
 	:geometry (
-      geometry :x "-20px" 
-      :y "7%" 
+      geometry :x "-20px"
+      :y "7%"
       :anchor "top right"
-      :width "270px" 
+      :width "270px"
       :height "60px")
   (calendar_module)
 )
@@ -309,28 +345,28 @@
 (defpoll clock_hour_minute :interval "5s" "date +\%H' ':' '%M")
 
 (defwidget clock_module []
-  (eventbox 
+  (eventbox
     :onhover "eww update time_reveal=\"true\""
     :onhoverlost "eww update time_reveal=\"false\""
     :class "time-module"
-    (box 
-      :class "module" 
-      :space-evenly "false" 
-      :orientation "h" 
+    (box
+      :class "module"
+      :space-evenly "false"
+      :orientation "h"
       :spacing "3"
-      
+
       (label :text clock_hour_minute)
       ; (label :text clock_time :class "clock_time_class" )
       ; (label :text ":" :class "clock_time_sep" )
       ; (label :text clock_minute :class "clock_minute_class")
-      (revealer 
+      (revealer
         :transition "slideleft"
         :reveal time_reveal
         :duration "350ms"
-        (button 
+        (button
           :class "clock_date_class"
-          :onclick "scripts/toggle_fade --calendar-on &" 
-          clock_date 
+          :onclick "scripts/toggle_fade --calendar-on &"
+          clock_date
         )
       )
     )
@@ -342,10 +378,10 @@
 
 
 (defwidget workspace_button [window_number]
-  (button 
+  (button
       :label {replace("number+", "number", window_number)}
       :onclick {replace ("bspc desktop \"number\" -f", "number", window_number)}
-      :class 
+      :class
         {(
           matches(
             occupied_info, replace("number+", "number", window_number)
@@ -357,7 +393,7 @@
 
 
 (defwidget workspaces []
-  (box 
+  (box
     :class "workspaces"
     :orientation "h"
     :space-evenly true
@@ -379,14 +415,14 @@
 
 
 (defwidget metric [label value ?onchange]
-  (box 
+  (box
     :orientation "h"
     :class "metric"
     :space-evenly false
-    (box 
+    (box
       label
     )
-    (scale 
+    (scale
       :min 0
       :max 101
       :active {onchange != ""}
@@ -396,17 +432,19 @@
   )
 )
 
-(defwidget metric-v [label value ?onchange]
-  (box 
+(defwidget metric-v [text value ?onchange]
+  (box
     :orientation "h"
     :class "metric-v"
     :space-evenly false
     :vexpand false
     :hexpand false
-    (box 
-      label
+    (box
+      (label
+        :text {text}
+      )
     )
-    (scale 
+    (scale
       :min 0
       :max 101
       :active {onchange != ""}
@@ -422,12 +460,10 @@
 
 
 
-
-
 (defwindow system
-	:geometry (geometry 
-    :x "-20px" 
-    :y "7%" 
+	:geometry (geometry
+    :x "-20px"
+    :y "7%"
     :anchor "top right"
     :width "290px"
   )
@@ -435,22 +471,20 @@
   (system)
 )
 
-(defpoll battery :initial "0" :interval "10s" "scripts/battery --bat")
-(defpoll battery_status :initial "0" :interval "1m" "scripts/battery --bat-st")
-(defvar has_battery true)
+
 
 (defwindow bar
   :monitor 0
   :windowtype "dock"
-  :geometry (geometry 
+  :geometry (geometry
     :x "0%"
     :y "1%"
     :width "95%"
     :height "30px"
     :anchor "top center"
-  )                    
-  :reserve (struts 
-    :side "top" 
+  )
+  :reserve (struts
+    :side "top"
     :distance "6%"
   )
   (bar)
@@ -465,11 +499,11 @@
 (defvar system_reveal "false")
 
 (defwidget system_popup_icon [text value]
-  (circular-progress 
+  (circular-progress
     :value value
     :class "css_system_popup_circle"
     :thickness 9
-    (label 
+    (label
       :text text
       :class "css_system_popup_icon"
       :xalign 0.5
@@ -481,7 +515,7 @@
 )
 
 (defwidget system_popup_image [path value width height ?thickness ?class]
-  (circular-progress 
+  (circular-progress
     :value value
     :class "css_system_popup_circle"
     :thickness {thickness != "" ? thickness: 9}
@@ -489,7 +523,7 @@
       :path path
       :image-width width
       :image-height height
-      :class {class != "" ? class: "css_system_popup_icon"} 
+      :class {class != "" ? class: "css_system_popup_icon"}
       :xalign 0.5
       :yalign 0.5
       :show_truncated false
@@ -499,19 +533,19 @@
 )
 
 (defwidget system_popup_text_box []
-  (box 
-    :orientation "v" 
-    :space-evenly "false" 
-    :spacing 0 
-    :hexpand "false" 
+  (box
+    :orientation "v"
+    :space-evenly "false"
+    :spacing 0
+    :hexpand "false"
     :vexpand "false"
-  
+
     (children)
   )
 )
 
 (defwidget system_popup_top_text [text ?limit-width]
-  (label 
+  (label
     :text text
     :halign "start"
     :class "css_system_popup_top_text"
@@ -534,17 +568,17 @@
 
 
 (defwidget system_popup_seperator []
-  (label 
-    :text "" 
-    :class "css_system_seperator" 
-    :halign "center" 
+  (label
+    :text ""
+    :class "css_system_seperator"
+    :halign "center"
   )
 )
 
 (defwidget system_popup_battery_section []
-  (box 
-    :class "css_system_popup_section_box css_system_popup_battery" 
-    :orientation "h" 
+  (box
+    :class "css_system_popup_section_box css_system_popup_battery"
+    :orientation "h"
     :space-evenly "false"
     (system_popup_image
       :path "img/battery-beige.svg"
@@ -557,19 +591,19 @@
         :text "battery"
       )
       (system_popup_botoom_text
-        :text "${round(EWW_BATTERY.total_avg, 0)}%"
+        :text "${EWW_BATTERY.BAT0.capacity}%"
       )
       (system_popup_botoom_text
-        :text "${battery_status}"
+        :text "${EWW_BATTERY.BAT0.status}"
       )
     )
   )
 )
 
 (defwidget system_popup_disk_section []
-  (box 
-    :class "css_system_popup_section_box css_system_popup_disk" 
-    :orientation "h" 
+  (box
+    :class "css_system_popup_section_box css_system_popup_disk"
+    :orientation "h"
     :space-evenly "false"
     (system_popup_image
       :path "img/database-purple.svg"
@@ -589,9 +623,9 @@
 )
 
 (defwidget system_popup_memory_section []
-  (box 
-    :class "css_system_popup_section_box css_system_popup_memory" 
-    :orientation "h" 
+  (box
+    :class "css_system_popup_section_box css_system_popup_memory"
+    :orientation "h"
     :space-evenly "false"
     (system_popup_image
       :width 30
@@ -616,7 +650,7 @@
 
 
 (defwidget system []
-  (eventbox 
+  (eventbox
     :onhoverlost "scripts/toggle_fade --system-off &"
     :height 10
     (revealer
@@ -624,25 +658,25 @@
       :duration "400ms"
       :reveal {system_reveal}
       (box
-        :class "css_system_popup_main" 
-        :orientation "v" 
-        :space-evenly "false" 
-        :hexpand "false" 
-        :vexpand "false" 
+        :class "css_system_popup_main"
+        :orientation "v"
+        :space-evenly "false"
+        :hexpand "false"
+        :vexpand "false"
         :spacing 0
         (revealer
           :transition "none"
           :duration "0ms"
           :reveal {has_battery}
           (box
-            :orientation "v" 
-            :space-evenly "false" 
-            :hexpand "false" 
-            :vexpand "false" 
+            :orientation "v"
+            :space-evenly "false"
+            :hexpand "false"
+            :vexpand "false"
             (system_popup_battery_section)
             (system_popup_seperator)
           )
-          
+
         )
         (system_popup_disk_section)
         (system_popup_seperator)
@@ -659,10 +693,10 @@
 (defvar battery_warning_40_fired "false")
 
 (defwindow battery_warning
-	:geometry (geometry 
-    :x "-2%" 
-    :y "7%" 
-    :anchor "top right"
+	:geometry (geometry
+    :x "0%"
+    :y "0%"
+    :anchor "center center"
     :width "400px"
     :height "300px"
   )
@@ -676,12 +710,12 @@
     :duration "400ms"
     :reveal {battery_warning_reveal}
     (box
-      :class "css_battery_warning_box css_system_popup_battery" 
+      :class "css_battery_warning_box css_system_popup_battery"
       :orientation "v"
       :space-evenly "false"
       (box
         :class "css_battery_warning_icon_box"
-        :valign "center" 
+        :valign "center"
         :halign "center"
         :space-evenly "false"
         (system_popup_image
@@ -690,15 +724,15 @@
           :height 125
           :thickness 10
           :class "css_battery_warning_icon"
-          :value {round(EWW_BATTERY.total_avg, 0)}
+          :value {EWW_BATTERY.BAT0.capacity}
         )
       )
       (box
         :class "css_battery_warning_text_box"
-        :valign "center" 
+        :valign "center"
         :halign "center"
         :space-evenly "false"
-        "Battery at ${round(EWW_BATTERY.total_avg, 0)}%"
+        "Battery at ${EWW_BATTERY.BAT0.capacity}%"
       )
     )
   )
