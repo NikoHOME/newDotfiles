@@ -1,0 +1,48 @@
+### ALIASES ###
+alias g="git"
+alias g-a="git add"
+alias g-au="git add --update"
+alias g-br="git branch"
+alias g-br-del="git branch --delete"
+alias g-br-delf="git branch --delete --force"
+alias g-clean="git clean"
+alias g-clean-fdx="git clean -dx --force"
+alias g-clone="git clone"
+alias g-cm-e="git commit"
+alias g-cm="git commit -m"
+alias g-am-e="git commit --amend"
+alias g-am="git commit --amend --no-edit"
+alias g-conf="git config"
+alias g-conf-glob="git config --global"
+alias g-df="git diff"
+alias g-fetch="git fetch"
+alias g-init="git init"
+alias g-merg="git merge"
+alias g-merg-con="git merge --continue"
+alias g-merg-abo="git merge --abort"
+alias g-pull="git pull"
+alias g-pull-f="git pull --force"
+alias g-push="git push"
+alias g-push-f="git push --force"
+alias g-reb="git rebase"
+alias g-reb-i="git rebase --interactive"
+alias g-reb-abo="git rebase --abort"
+alias g-reb-skip="git reabse --skip"
+alias g-reb-con="git reabse --continue"
+alias g-reset="git reset"
+alias g-reset-s="git reset --soft"
+alias g-reset-h="git reset --hard"
+alias g-rest="git restore"
+alias g-rest-st="git restore --staged"
+alias g-sw="git switch"
+alias g-stash="git stash"
+alias g-stash-p="git stash pop"
+alias g-st="git status -uno"
+alias g-st-a="git status"
+
+
+### VARIABLES ###
+
+
+### FUNCTIONS ###
+

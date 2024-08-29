@@ -1,0 +1,30 @@
+
+title = "Niko's dotfiles config"
+
+[base]
+
+
+[shell]
+    [shell.aliases]
+        use_default = true
+        custom = [
+            # ["example", "value"]
+        ]
+    [shell.variables]
+        use_default = true
+        custom = [
+            # ["example", "value"]
+        ]
+    [shell.functions]
+        use_default = true
+        custom = [
+            # ["example",
+            #     """
+            #     if [this] then;
+            #         that
+            #     fi
+            #     end()
+            #     """
+            # ]
+        ]
+
