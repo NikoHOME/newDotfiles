@@ -1,13 +1,6 @@
 #!/bin/sh
 
-./scripts/battery --bat-exists &
-
-# X11 Compositor
-picom -b &
-
-# Wallpaper
-pkill feh
-feh -F --bg-scale ~/.config/eww/background.jpg &
+./scripts/battery --bat-exists
 
 # System tray
 pkill trayer
@@ -23,9 +16,6 @@ blueman-applet &
 
 # cursor fix
 xsetroot -cursor_name left_ptr
-
-# autorandr refresh
-autorandr -c --ignore-lid & 
 
 # fix for a gap caused by a restart
 sleep 0.25

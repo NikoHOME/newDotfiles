@@ -1,12 +1,8 @@
 
-
-
-
-
-(defvar screen_height "1080")
 (defvar bar_hover false)
 (defvar bar_reveal false)
 (defvar bar_reveal_keep true)
+(deflisten on_start :initial "0" "scripts/on_start")
 
 (defwidget bar []
   (eventbox
@@ -50,7 +46,7 @@
   )
 )
 
-(deflisten on_start :initial "0" "scripts/on_start")
+
 
 (defwidget script_activator []
  (box
@@ -93,7 +89,7 @@
 )
 
 (defpoll battery_alert :initial "0" :interval "10s" "scripts/battery --bat-alert")
-(defvar has_battery true)
+(defvar has_battery false)
 
 
 
@@ -105,6 +101,8 @@
   )
 )
 
+(deflisten primary_monitor :initial "None" "python scripts/monitors/manager.py")
+
 
 (defwidget right []
   (box
@@ -112,7 +110,6 @@
     :orientation "h"
     :space-evenly false
     :spacing 10
-
 
     (volume_module)
     (seperator)
@@ -187,8 +184,6 @@
   )
 )
 
-(defpoll memory :initial "0" :interval "5s" "scripts/memory" )
-
 (defwidget ram_module []
   (box
     :class "ram-module"
@@ -196,13 +191,13 @@
     :hexpand "false"
     (button
         :limit-width 2
-        :tooltip "using ${memory}% ram"
+        :tooltip "using ${round(EWW_RAM.used_mem_perc,0)}% ram"
         :onclick "scripts/toggle_fade --system-on &"
         :show_truncated false
         :wrap false
-        (metric-v
-          :text "󰍛 "
-          :value memory
+        (metric-v 
+          :label "󰍛 "
+          :value {EWW_RAM.used_mem_perc}
           :onchange ""
         )
     )
@@ -336,7 +331,6 @@
 
 
 
-
 (defvar time_reveal false)
 ; (defpoll clock_time :interval "5m" "date +\%H")7
 ; (defpoll clock_minute :interval "5s" "date +\%M")
@@ -356,10 +350,7 @@
       :spacing "3"
 
       (label :text clock_hour_minute)
-      ; (label :text clock_time :class "clock_time_class" )
-      ; (label :text ":" :class "clock_time_sep" )
-      ; (label :text clock_minute :class "clock_minute_class")
-      (revealer
+      (revealer 
         :transition "slideleft"
         :reveal time_reveal
         :duration "350ms"
@@ -373,8 +364,9 @@
   )
 )
 
-(deflisten occupied_info :initial "0 1 2 3 4 5 6 7 8 9" "scripts/get_occupied_workspace" )
-(deflisten current_info :initial "0" "scripts/get_current_workspace")
+(deflisten occupied_info :initial "0 1 2 3 4 5 6 7 8 9" "scripts/workspaces --occupied" )
+(deflisten current_info :initial "0" "scripts/workspaces --current")
+;(deflisten current_info :initial "0" "xprop -spy -root _NET_CURRENT_DESKTOP")
 
 
 (defwidget workspace_button [window_number]
@@ -489,12 +481,6 @@
   )
   (bar)
 )
-
-
-
-(defpoll memory_used_mb :interval "10s" "scripts/mem-ad --used")
-(defpoll memory_total_mb :interval "10s" "scripts/mem-ad --total")
-(defpoll memory_free_mb :interval "10s" "scripts/mem-ad --free")
 
 (defvar system_reveal "false")
 
@@ -631,17 +617,17 @@
       :width 30
       :height 30
       :path "img/memory-green.svg"
-      :value {memory}
+      :value {round(EWW_RAM.used_mem_perc,0)}
     )
     (system_popup_text_box
       (system_popup_top_text
         :text "memory usage"
       )
       (system_popup_botoom_text
-        :text "${memory_used_mb} | ${memory_total_mb}mb "
+        :text "${round(EWW_RAM.used_mem / 1024 / 1024, 0)} | ${round(EWW_RAM.total_mem / 1024 / 1024, 0)}mb "
       )
       (system_popup_botoom_text
-        :text "${memory_free_mb}mb free"
+        :text "${round(EWW_RAM.used_mem_perc, 0)}%"
       )
     )
   )

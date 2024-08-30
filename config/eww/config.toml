@@ -1,0 +1,9 @@
+
+title = "Niko's eww config"
+
+[x11]
+    [x11.monitors]
+        # [single, dual]
+        mode = "single"
+        # Prioritize the primary monitor by [height, width, pixel_count]  
+        priority = "width"

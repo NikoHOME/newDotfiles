@@ -2,8 +2,7 @@
 
 BAT=`ls /sys/class/power_supply | grep BAT | head -n 1`
 
-status=`cat /sys/class/power_supply/${BAT}/status`
-charge=`cat /sys/class/power_supply/${BAT}/capacity`
+
 
 
 battery_exists() {
@@ -16,6 +15,8 @@ battery_exists() {
 }
 
 bat_alert() {
+	status=`cat /sys/class/power_supply/${BAT}/status`
+	charge=`cat /sys/class/power_supply/${BAT}/capacity`
 	if [ $status == "Discharging" ]; then
 		warning_20_fired=`eww get battery_warning_20_fired`
 		warning_40_fired=`eww get battery_warning_40_fired`

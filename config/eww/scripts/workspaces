@@ -1,0 +1,24 @@
+#!/bin/sh
+
+echo_current() {
+    # Initial workspace 
+    echo 0
+    bspc subscribe desktop node_transfer | while read -r _ ; do
+        current_workspace=$(bspc query -D -d focused --names)
+        echo $current_workspace
+    done
+}
+
+echo_occupied() {
+    bspc subscribe desktop node | while read -r _ ; do
+        output=$(bspc query -D -d .occupied --names)
+        echo $output
+    done
+}
+
+
+if [[ "$1" == "--current" ]]; then
+	echo_current
+elif [[ "$1" == "--occupied" ]]; then
+	echo_occupied
+fi
